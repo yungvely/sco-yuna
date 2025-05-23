@@ -6,9 +6,9 @@ type RSVPData = {
   name: string;
   attending: "yes" | "no";
   side: "groom" | "bride";
-  message: string;
+  message?: string;
   agree: boolean;
-  count: number;
+  count?: number;
 };
 
 export const saveRSVP = async (data: RSVPData) => {

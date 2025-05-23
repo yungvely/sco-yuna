@@ -20,8 +20,8 @@ const schema = z
     }),
     count: z.coerce.number().optional(),
     message: z.string().optional(),
-    agree: z.literal(true, {
-      errorMap: () => ({ message: "개인정보 수집에 동의해주세요" }),
+    agree: z.boolean().refine((val) => val === true, {
+      message: "개인정보 수집에 동의해주세요",
     }),
   })
   .refine((data) => data.attending === "no" || (data.count && data.count > 0), {
