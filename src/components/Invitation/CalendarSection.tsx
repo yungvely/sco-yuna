@@ -1,0 +1,170 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { useInView } from "react-intersection-observer";
+import styled from "styled-components";
+
+const Wrapper = styled.section`
+  padding: 80px 24px;
+  text-align: center;
+`;
+
+const DateText = styled.h3`
+  font-size: 20px;
+  margin-bottom: 8px;
+`;
+
+const SubText = styled.p`
+  color: #999;
+  font-size: 14px;
+  margin-bottom: 32px;
+`;
+
+const Calendar = styled.div`
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  text-align: center;
+  max-width: 320px;
+  margin: 0 auto 24px;
+`;
+
+const Day = styled.div<{ active?: boolean }>`
+  padding: 6px;
+  border-radius: 50%;
+  background: ${({ active }) => (active ? "#5a371a" : "transparent")};
+  color: ${({ active }) => (active ? "#fff" : "#333")};
+`;
+
+const DdayWrap = styled.div`
+  margin-top: 32px;
+`;
+
+const Countdown = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  gap: 8px;
+  font-family: "Gowun Batang", serif;
+`;
+
+const Block = styled.div`
+  text-align: center;
+`;
+
+const Label = styled.div`
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 4px;
+`;
+
+const Value = styled.span`
+  font-size: 24px;
+  padding: 4px 10px;
+  background: #eee;
+  border-radius: 4px;
+`;
+
+const Colon = styled.div`
+  font-size: 24px;
+  padding: 0 4px;
+`;
+
+const Subtitle = styled.p`
+  margin-top: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+`;
+
+const CalendarSection = () => {
+  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
+
+  const weddingDate = new Date("2025-08-23T12:30:00+09:00");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const diff = weddingDate.getTime() - now.getTime();
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      setTimeLeft({ days, hours, minutes, seconds });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const displayDay =
+    timeLeft.hours > 0 || timeLeft.minutes > 0 || timeLeft.seconds > 0
+      ? timeLeft.days + 1
+      : timeLeft.days;
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8 }}
+    >
+      <Wrapper>
+        <DateText>2025.08.23</DateText>
+        <SubText>토요일 낮 12시 30분</SubText>
+
+        <Calendar>
+          {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
+            <Day key={day}>{day}</Day>
+          ))}
+          {Array.from({ length: 31 }, (_, i) => {
+            const date = i + 1;
+            return (
+              <Day key={date} active={date === 23}>
+                {date}
+              </Day>
+            );
+          })}
+        </Calendar>
+
+        <DdayWrap>
+          <Countdown>
+            <Block>
+              <Label>Days</Label>
+              <Value>{timeLeft.days}</Value>
+            </Block>
+            <Colon>:</Colon>
+            <Block>
+              <Label>Hour</Label>
+              <Value>{timeLeft.hours}</Value>
+            </Block>
+            <Colon>:</Colon>
+            <Block>
+              <Label>Min</Label>
+              <Value>{timeLeft.minutes}</Value>
+            </Block>
+            <Colon>:</Colon>
+            <Block>
+              <Label>Sec</Label>
+              <Value>{timeLeft.seconds}</Value>
+            </Block>
+          </Countdown>
+
+          <Subtitle>
+            석호, 윤아의 결혼식이{" "}
+            <span style={{ color: "#964b00" }}>{displayDay}</span>일 남았습니다.
+          </Subtitle>
+        </DdayWrap>
+      </Wrapper>
+    </motion.div>
+  );
+};
+
+export default CalendarSection;
