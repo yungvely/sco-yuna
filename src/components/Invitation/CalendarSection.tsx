@@ -124,11 +124,11 @@ const CalendarSection = () => {
           {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
             <Day key={day}>{day}</Day>
           ))}
-          {Array.from({ length: 31 }, (_, i) => {
-            const date = i + 1;
+          {Array.from({ length: 42 }, (_, i) => {
+            const date = i - 4;
             return (
               <Day key={date} active={date === 23}>
-                {date}
+                {i > 4 && i < 36 && date}
               </Day>
             );
           })}

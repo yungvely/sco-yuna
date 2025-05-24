@@ -30,7 +30,7 @@ const Address = styled.p`
 
 const MapContainer = styled.div`
   width: 100%;
-  height: 260px;
+  height: 200px;
   border-radius: 12px;
   overflow: hidden;
   margin: 24px auto;
@@ -53,6 +53,10 @@ const NavButton = styled.button`
   background: #fff;
   color: #333;
   cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Directions = styled.div`
@@ -112,6 +116,11 @@ const ModalButton = styled.button`
   cursor: pointer;
 `;
 
+const MapIcon = styled.img<{ size?: string }>`
+  width: ${({ size }) => size || "20"}px;
+  margin-right: 6px;
+`;
+
 const LocationSection = () => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
   const mapRef = useRef<HTMLDivElement>(null);
@@ -120,11 +129,16 @@ const LocationSection = () => {
   >(null);
 
   useEffect(() => {
-    const location = new window.naver.maps.LatLng(
-      37.50436945715146,
-      127.04997438696505
-    );
-    if (typeof window !== "undefined" && window.naver && mapRef.current) {
+    if (
+      typeof window !== "undefined" &&
+      typeof window.naver !== "undefined" &&
+      typeof window.naver.maps !== "undefined" &&
+      mapRef.current
+    ) {
+      const location = new window.naver.maps.LatLng(
+        37.50436945715146,
+        127.04997438696505
+      );
       const map = new window.naver.maps.Map(mapRef.current, {
         center: location,
         zoom: 17,
@@ -191,11 +205,27 @@ const LocationSection = () => {
 
         <NavLinks>
           <NavButton onClick={() => setModalVisible("naver")}>
-            🟢 네이버지도
+            <MapIcon
+              src="https://map.naver.com/p/assets/icons/favicon.ico"
+              alt=""
+            />
+            네이버지도
           </NavButton>
-          <NavButton onClick={() => setModalVisible("tmap")}>🔵 티맵</NavButton>
+          <NavButton onClick={() => setModalVisible("tmap")}>
+            <MapIcon
+              size="12"
+              src="https://www.tmapmobility.com/favicon.ico"
+              alt=""
+            />
+            티맵
+          </NavButton>
           <NavButton onClick={() => setModalVisible("kakao")}>
-            🟡 카카오내비
+            <MapIcon
+              size="18"
+              src="https://t1.kakaocdn.net/kakaomobility/company_website/contents/v2/12-icon-navi.svg"
+              alt=""
+            />
+            카카오내비
           </NavButton>
         </NavLinks>
 

@@ -37,6 +37,7 @@ const Invitation = () => {
       <LocationSection />
       <InformationSection />
       <ShareSection />
+      {/* <AccountSection /> */}
       <RSVPSection onClick={() => setShowForm(true)} />
       {showPopup && (
         <RSVPPopup

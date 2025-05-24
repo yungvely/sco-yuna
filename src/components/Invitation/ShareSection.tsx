@@ -94,7 +94,7 @@ const ShareSection = () => {
         </ShareButton>
         <ShareButton
           onClick={() => {
-            navigator.clipboard.writeText("https://yourdomain.com");
+            navigator.clipboard.writeText("https://sco-yuna.kr");
             alert("링크가 복사되었습니다");
           }}
         >
