@@ -49,7 +49,7 @@ const Close = styled.button`
   right: 16px;
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 1.5rem;
   cursor: pointer;
 `;
 

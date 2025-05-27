@@ -6,7 +6,7 @@ const Overlay = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
@@ -20,6 +20,7 @@ const PopupBox = styled.div`
   background: #fff;
   padding: 32px 24px;
   border-radius: 16px;
+  width: 377px;
   max-width: 90%;
   text-align: center;
 `;
@@ -30,7 +31,7 @@ const CloseButton = styled.button`
   right: 12px;
   background: none;
   border: none;
-  font-size: 24px;
+  font-size: 1.5rem;
   cursor: pointer;
 `;
 

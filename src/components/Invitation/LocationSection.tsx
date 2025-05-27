@@ -18,12 +18,12 @@ const Title = styled.h3`
 `;
 
 const Heading = styled.h2`
-  font-size: 20px;
+  font-size: 1.25rem;
   margin-bottom: 16px;
 `;
 
 const Address = styled.p`
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #555;
   margin-bottom: 4px;
 `;
@@ -62,7 +62,7 @@ const NavButton = styled.button`
 const Directions = styled.div`
   margin-top: 32px;
   text-align: left;
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.8;
   color: #333;
   max-width: 360px;
@@ -102,7 +102,7 @@ const Modal = styled.div`
 `;
 
 const ModalText = styled.p`
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #333;
   margin-bottom: 16px;
 `;
@@ -112,7 +112,7 @@ const ModalButton = styled.button`
   background: #e6e0dd;
   border: none;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 0.875rem;
   cursor: pointer;
 `;
 
@@ -206,7 +206,7 @@ const LocationSection = () => {
         <NavLinks>
           <NavButton onClick={() => setModalVisible("naver")}>
             <MapIcon
-              src="https://map.naver.com/p/assets/icons/favicon.ico"
+              src="https://ditto-phinf.pstatic.net/20250403_62/1743664218329EDdUx_PNG/67ee345a33d4b137e96c1b58.png"
               alt=""
             />
             네이버지도

@@ -7,16 +7,46 @@ export const GlobalStyle = createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
   }
+
   @font-face {
-    font-family: 'GowunDodum-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/GowunDodum-Regular.woff') format('woff');
+    font-family: "경기바탕체";
+    src: url("/fonts/Batang_Regular.woff") format("woff");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "고운돋음";
+    src: url("/fonts/GowunDodum-Regular.woff2") format("woff2");
     font-weight: normal;
     font-style: normal;
-}
+    font-display: swap;
+  }
+
+
+  @font-face {
+    font-family: "안창호체";
+    src: url("/fonts/KCC-Ahnchangho.woff2") format("woff2");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  
+
+  * {
+    font-family: "경기바탕체", sans-serif;
+  }
+
+  html {
+    font-size: ${({ theme }) => theme.fontSize || "16px"};
+    line-height: 1.5;
+  }
   html, body {
-    font-family: 'GowunDodum-Regular', sans-serif;
-    background-color: ${({ theme }) => theme.colors.background};
+    background-color: #f6f6f6;
     color: ${({ theme }) => theme.colors.text};
+
 
     touch-action: manipulation;
     -ms-touch-action: manipulation;

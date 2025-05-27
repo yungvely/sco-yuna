@@ -11,19 +11,18 @@ const Wrapper = styled.section`
 `;
 
 const Title = styled.h3`
-  font-size: 16px;
   color: #d17f45;
   margin-bottom: 12px;
   letter-spacing: 1px;
 `;
 
 const Heading = styled.h2`
-  font-size: 20px;
+  font-size: 1.25rem;
   margin-bottom: 24px;
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #333;
   line-height: 1.7;
   margin-top: 16px;
@@ -52,11 +51,11 @@ const InformationSection = () => {
         <Heading>예식정보 및 안내사항</Heading>
         <PhotoWrapper>
           <Image
-            src="https://cdn.imweb.me/thumbnail/20230526/1d2af35423c39.jpg"
+            src="/photo/photobooth.jpg"
+            //https://cdn.imweb.me/thumbnail/20230526/1d2af35423c39.jpg
             alt="포토부스"
             width={280}
             height={160}
-            unoptimized // ✨ 이 줄 추가
             style={{ objectFit: "cover", width: "100%", height: "100%" }}
           />
         </PhotoWrapper>

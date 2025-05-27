@@ -10,26 +10,25 @@ const Wrapper = styled.section`
 `;
 
 const Title = styled.h3`
-  font-size: 16px;
   color: #d17f45;
   margin-bottom: 12px;
   letter-spacing: 1px;
 `;
 
 const Heading = styled.h2`
-  font-size: 20px;
+  font-size: 1.25rem;
   margin-bottom: 16px;
 `;
 
 const Description = styled.p`
-  font-size: 14px;
+  font-size: 0.875rem;
   color: #333;
   line-height: 1.7;
   margin-bottom: 24px;
 `;
 
 const Button = styled.button`
-  font-size: 14px;
+  font-size: 0.875rem;
   padding: 12px 20px;
   border: 1px solid #e6dfd9;
   border-radius: 12px;

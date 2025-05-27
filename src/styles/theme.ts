@@ -1,4 +1,5 @@
 export const theme = {
+  fontSize: "16px",
   colors: {
     primary: "#FF7A59",
     secondary: "#FFB199",

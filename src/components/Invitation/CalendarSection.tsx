@@ -11,13 +11,13 @@ const Wrapper = styled.section`
 `;
 
 const DateText = styled.h3`
-  font-size: 20px;
+  font-size: 1.25rem;
   margin-bottom: 8px;
 `;
 
 const SubText = styled.p`
   color: #999;
-  font-size: 14px;
+  font-size: 0.875rem;
   margin-bottom: 32px;
 `;
 
@@ -30,11 +30,11 @@ const Calendar = styled.div`
   margin: 0 auto 24px;
 `;
 
-const Day = styled.div<{ active?: boolean }>`
+const Day = styled.div<{ active?: boolean; red?: boolean }>`
   padding: 6px;
   border-radius: 50%;
   background: ${({ active }) => (active ? "#5a371a" : "transparent")};
-  color: ${({ active }) => (active ? "#fff" : "#333")};
+  color: ${({ active, red }) => (active ? "#fff" : red ? "#d9534f" : "#333")};
 `;
 
 const DdayWrap = styled.div`
@@ -54,28 +54,34 @@ const Block = styled.div`
 `;
 
 const Label = styled.div`
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #888;
   margin-bottom: 4px;
 `;
 
 const Value = styled.span`
-  font-size: 24px;
+  font-size: 1.5rem;
   padding: 4px 10px;
   background: #eee;
   border-radius: 4px;
 `;
 
 const Colon = styled.div`
-  font-size: 24px;
+  font-size: 1.5rem;
   padding: 0 4px;
 `;
 
 const Subtitle = styled.p`
   margin-top: 16px;
-  font-size: 16px;
   font-weight: bold;
   color: #333;
+`;
+
+const Days = styled.span`
+  color: #964b00;
+  font-weight: bold;
+  vertical-align: middle;
+  margin: 0 4px;
 `;
 
 const CalendarSection = () => {
@@ -104,10 +110,18 @@ const CalendarSection = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const displayDay =
-    timeLeft.hours > 0 || timeLeft.minutes > 0 || timeLeft.seconds > 0
-      ? timeLeft.days + 1
-      : timeLeft.days;
+  const today = new Date();
+  const isDday =
+    today.getFullYear() === weddingDate.getFullYear() &&
+    today.getMonth() === weddingDate.getMonth() &&
+    today.getDate() === weddingDate.getDate();
+
+  const displayDay = isDday
+    ? "D-DAY❤️"
+    : timeLeft.days +
+      (timeLeft.hours > 0 || timeLeft.minutes > 0 || timeLeft.seconds > 0
+        ? 1
+        : 0);
 
   return (
     <motion.div
@@ -122,13 +136,18 @@ const CalendarSection = () => {
 
         <Calendar>
           {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
-            <Day key={day}>{day}</Day>
+            <Day key={day} red={day === "일"}>
+              {day}
+            </Day>
           ))}
           {Array.from({ length: 42 }, (_, i) => {
             const date = i - 4;
+            const isVisible = i > 4 && i < 36;
+            const isSunday = i % 7 === 0;
+            const isFifteenth = date === 15;
             return (
-              <Day key={date} active={date === 23}>
-                {i > 4 && i < 36 && date}
+              <Day key={i} active={date === 23} red={isSunday || isFifteenth}>
+                {isVisible ? date : ""}
               </Day>
             );
           })}
@@ -158,8 +177,8 @@ const CalendarSection = () => {
           </Countdown>
 
           <Subtitle>
-            석호, 윤아의 결혼식이{" "}
-            <span style={{ color: "#964b00" }}>{displayDay}</span>일 남았습니다.
+            석호, 윤아의 결혼식이<Days>{displayDay}</Days>
+            {typeof displayDay === "string" ? " 입니다." : "일 남았습니다."}
           </Subtitle>
         </DdayWrap>
       </Wrapper>

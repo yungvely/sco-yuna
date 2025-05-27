@@ -3,18 +3,28 @@
 import BackgroundMusic from "@/components/Invitation/BackgroundMusic";
 import RSVPForm from "@/components/RSVP/RSVPForm";
 import RSVPPopup from "@/components/RSVP/RSVPPopup";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import ArchHero from "./ArchHero";
+import { FontSizeControl } from "./common/FontSizeController";
+import { FlowerCanvas } from "./FlowerCanvas";
+import AccountSection from "./Invitation/AccountSection";
 import CalendarSection from "./Invitation/CalendarSection";
+import GallerySection from "./Invitation/Gallery";
 import GreetingSection from "./Invitation/GreetingSection";
 import InformationSection from "./Invitation/InformationSection";
 import LocationSection from "./Invitation/LocationSection";
 import RSVPSection from "./Invitation/RSVPSection";
 import ShareSection from "./Invitation/ShareSection";
 
-const Invitation = () => {
+type Props = {
+  variant?: "yuna" | "sco";
+};
+
+const Invitation = ({ variant }: Props) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
+  const section1Ref = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const hidden = localStorage.getItem("rsvp_hidden_date");
     const today = new Date().toISOString().split("T")[0];
@@ -32,13 +42,30 @@ const Invitation = () => {
   return (
     <>
       <BackgroundMusic />
-      <GreetingSection />
-      <CalendarSection />
-      <LocationSection />
-      <InformationSection />
-      <ShareSection />
-      {/* <AccountSection /> */}
+      <FlowerCanvas
+        sectionRef={section1Ref}
+        //variant="blossom"
+      />
+      <ArchHero ref={section1Ref} imageSrc="/photo/first.gif" />
+      <GreetingSection variant={variant ? "yunasco" : "modern"} />
+      {variant ? (
+        variant === "yuna" ? (
+          <YunaVersion />
+        ) : (
+          <ScoVersion />
+        )
+      ) : (
+        <>
+          <CalendarSection />
+          <GallerySection />
+          <LocationSection />
+          <InformationSection />
+          {/* <AccountSection /> */}
+          <FontSizeControl />
+        </>
+      )}
       <RSVPSection onClick={() => setShowForm(true)} />
+      <ShareSection variant={variant} />
       {showPopup && (
         <RSVPPopup
           onClose={() => setShowPopup(false)}
@@ -53,5 +80,25 @@ const Invitation = () => {
     </>
   );
 };
+
+const YunaVersion = () => (
+  <>
+    <CalendarSection />
+    <GallerySection />
+    <LocationSection />
+    <InformationSection />
+    <AccountSection />
+  </>
+);
+
+const ScoVersion = () => (
+  <>
+    <CalendarSection />
+    <GallerySection />
+    {/* <LocationSection /> */}
+    <InformationSection />
+    <AccountSection />
+  </>
+);
 
 export default Invitation;

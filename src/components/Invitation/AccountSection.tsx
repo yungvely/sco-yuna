@@ -10,19 +10,17 @@ const Wrapper = styled.section`
 `;
 
 const Title = styled.h3`
-  font-size: 16px;
   color: #b27650;
   margin-bottom: 12px;
   letter-spacing: 1px;
 `;
 
 const Heading = styled.h2`
-  font-size: 24px;
+  font-size: 1.5rem;
   margin-bottom: 24px;
 `;
 
 const Description = styled.p`
-  font-size: 16px;
   color: #444;
   margin-bottom: 40px;
   white-space: pre-line;
@@ -38,7 +36,6 @@ const Tabs = styled.div`
 const TabButton = styled.button<{ active: boolean }>`
   padding: 8px 16px;
   border-radius: 999px;
-  font-size: 16px;
   background: ${({ active }) => (active ? "#000" : "#f6f6f6")};
   color: ${({ active }) => (active ? "#fff" : "#888")};
   border: none;
@@ -53,7 +50,6 @@ const AccountCard = styled.div`
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   text-align: left;
-  font-size: 16px;
 `;
 
 const AccountRow = styled.div`
@@ -67,7 +63,6 @@ const KakaoPay = styled.a`
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 16px;
   margin-top: 16px;
   padding: 12px;
   background: #fef01b;
@@ -122,8 +117,8 @@ export default function AccountSection() {
       <Title>ACCOUNT</Title>
       <Heading>마음 전하실 곳</Heading>
       <Description>
-        참석이 어려우신 분들을 위해 계좌번호를 기재하였습니다.\n너그러운
-        마음으로 양해 부탁드립니다.
+        참석이 어려우신 분들을 위해 계좌번호를 기재하였습니다. <br />
+        너그러운 마음으로 양해 부탁드립니다.
       </Description>
 
       <Tabs>

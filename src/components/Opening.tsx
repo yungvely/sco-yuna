@@ -1,46 +1,128 @@
+// components/Opening.tsx
 "use client";
 
 import { useEffect } from "react";
-import styled, { keyframes } from "styled-components";
-
-const fadeIn = keyframes`
-  from { opacity: 0; transform: scale(1.05); }
-  to { opacity: 1; transform: scale(1); }
-`;
+import styled from "styled-components";
 
 const Wrapper = styled.div`
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  justify-content: center;
+  justify-self: anchor-center;
+`;
+
+const CenterImage = styled.img`
   width: 100vw;
   height: 100vh;
-  background: #fff7f0;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+`;
+
+const AnimatedText = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  animation: ${fadeIn} 1s ease;
+  gap: 8px;
+  z-index: 2;
+  position: absolute;
+  font-size: 3rem;
+  color: transparent;
+  left: 0;
+  text-align: center;
+  width: 100%;
+
+  .line {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .letter {
+    position: relative;
+    display: inline-block;
+    animation: overlay 3s infinite ease-out;
+    font-family: "안창호체", sans-serif;
+  }
+
+  .letter::before,
+  .letter::after {
+    content: attr(data-char);
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+  }
+
+  .letter::before {
+    color: gray;
+    -webkit-text-stroke: 0.01em rgba(0, 0, 0, 0.3);
+  }
+
+  .letter::after {
+    background-image: linear-gradient(90deg, white 50%, #f5f5f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transform: rotateY(-30deg) skew(0, -10deg);
+    transform-origin: left;
+    animation: overlay 3s infinite ease-out;
+  }
+
+  @keyframes overlay {
+    0%,
+    20%,
+    100% {
+      transform: rotateY(-30deg) skew(0, -10deg);
+    }
+    10% {
+      transform: rotateY(0deg) skew(0, 0);
+    }
+  }
 `;
 
-const Emoji = styled.div`
-  font-size: 4rem;
-`;
+const Opening = ({
+  onEnd,
+  message = "We're\ngetting married",
+  imageSrc = "/test.png",
+}: {
+  onEnd: () => void;
+  message?: string;
+  imageSrc?: string;
+}) => {
+  // const [visible, setVisible] = useState(true);
 
-const Title = styled.div`
-  margin-top: 16px;
-  font-size: 1.5rem;
-  font-weight: 600;
-`;
-
-const Opening = ({ onEnd }: { onEnd: () => void }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
+      // setVisible(false);
       onEnd();
-    }, 2500);
+    }, 2000);
     return () => clearTimeout(timer);
   }, [onEnd]);
 
   return (
     <Wrapper>
-      <Emoji>💌</Emoji>
-      <Title>우리 결혼해요</Title>
+      {/* <CenterImage src={imageSrc} alt="Opening image" /> */}
+      {/* {visible && ( */}
+      <AnimatedText>
+        {message.split("\n").map((line, lineIdx) => (
+          <div className="line" key={lineIdx}>
+            {line.split("").map((char, i) => (
+              <span
+                className="letter"
+                data-char={char}
+                key={i}
+                style={{ animationDelay: `${i * 0.15}s` }}
+              >
+                {char === " " ? "\u00A0" : char}
+              </span>
+            ))}
+          </div>
+        ))}
+      </AnimatedText>
+      {/* )} */}
     </Wrapper>
   );
 };

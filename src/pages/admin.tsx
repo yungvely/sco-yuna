@@ -1,4 +1,3 @@
-// src/app/admin/page.tsx
 "use client";
 
 import { db } from "@/lib/firebase";

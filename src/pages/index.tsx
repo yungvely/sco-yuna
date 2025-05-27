@@ -1,7 +1,6 @@
 // src/pages/index.tsx
 "use client";
 
-import NaverMapLoader from "@/components/common/NaverMapLoader";
 import Invitation from "@/components/Invitation";
 import Opening from "@/components/Opening";
 import Head from "next/head";
@@ -27,7 +26,7 @@ export default function HomePage() {
     <>
       {/* Head는 항상 렌더링 */}
       <Head>
-        <title>25.8.23 석호 ❤️ 윤아 결혼합니다</title>
+        <title>석호 ❤️ 윤아 결혼합니다</title>
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
@@ -54,13 +53,11 @@ export default function HomePage() {
         />
       </Head>
 
-      {/* Head와 무관한 상태 변화만 아래에서 수행 */}
       {openingFinished ? (
         <Invitation />
       ) : (
         <Opening onEnd={() => setOpeningFinished(true)} />
       )}
-      <NaverMapLoader />
     </>
   );
 }

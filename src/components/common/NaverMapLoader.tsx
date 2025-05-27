@@ -4,8 +4,6 @@
 import Script from "next/script";
 
 const NaverMapLoader = () => {
-  const clientId = process.env.NEXT_PUBLIC_NAVER_MAP_CLIENT_ID;
-
   return (
     <Script
       strategy="afterInteractive"
