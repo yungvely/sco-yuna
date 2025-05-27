@@ -23,13 +23,21 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
 
     const resizeCanvas = () => {
       const containerWidth = Math.min(window.innerWidth, 425);
+      const maxHeight = 800;
+
+      // 기준 높이: sectionRef의 clientHeight
+      const sectionHeight =
+        sectionRef.current?.clientHeight || window.innerHeight;
+      const containerHeight = Math.min(sectionHeight, maxHeight);
+
       canvas.width = containerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
+      canvas.height = containerHeight * dpr;
+
       ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
       ctx.scale(dpr, dpr);
+
       canvas.style.width = `${containerWidth}px`;
-      canvas.style.height = `${window.innerHeight}px`;
-      //   canvas.style.maxHeight = `600px`;
+      canvas.style.height = `${containerHeight}px`;
     };
 
     resizeCanvas();
@@ -118,7 +126,7 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
       if (variant === "blossom") {
         petalsRef.current = Array.from({ length: TOTAL }, () => new Petal());
       } else {
-        petalsRef.current = Array.from({ length: 45 }, () => ({
+        petalsRef.current = Array.from({ length: 25 }, () => ({
           x: Math.random() * window.innerWidth,
           y: Math.random() * window.innerHeight,
           r: 0.8 + Math.random() * 1.5,
@@ -158,7 +166,7 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
         transform: "translateX(-50%)",
         pointerEvents: "none",
         zIndex: 1,
-        opacity: visible ? 0.7 : 0,
+        opacity: visible ? 0.85 : 0,
         transition: "opacity 0.5s ease",
       }}
     />
