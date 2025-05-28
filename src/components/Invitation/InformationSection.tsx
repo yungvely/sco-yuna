@@ -1,12 +1,13 @@
 "use client";
 
+import { getAssetUrl } from "@/lib/getAssetUrl";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
 
 const Wrapper = styled.section`
-  padding: 80px 24px;
+  padding: 55px 24px;
   text-align: center;
 `;
 
@@ -51,8 +52,7 @@ const InformationSection = () => {
         <Heading>예식정보 및 안내사항</Heading>
         <PhotoWrapper>
           <Image
-            src="/photo/photobooth.jpg"
-            //https://cdn.imweb.me/thumbnail/20230526/1d2af35423c39.jpg
+            src={getAssetUrl("photobooth.webp")}
             alt="포토부스"
             width={280}
             height={160}

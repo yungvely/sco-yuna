@@ -69,4 +69,21 @@ export const GlobalStyle = createGlobalStyle`
   input, textarea {
     font-size: 16px; /* iOS는 16px 미만이면 자동 확대 발생 가능 */
   }
+  
+  .yarl__slide_image {
+    max-width: 425px !important;
+    margin: 0 auto;
+    display: block;
+  }
+
+  .yarl__container {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+  }
+
+  .yarl__slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
 `;

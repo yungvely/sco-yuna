@@ -42,3 +42,10 @@ next-env.d.ts
 
 # image
 public/photo
+
+
+
+
+scripts/
+.s3-uploaded.json
+.webp-hash.json

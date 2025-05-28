@@ -6,7 +6,7 @@ import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
 
 const Wrapper = styled.section`
-  padding: 80px 24px;
+  padding: 55px 24px;
   text-align: center;
 `;
 

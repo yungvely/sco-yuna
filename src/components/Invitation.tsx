@@ -3,13 +3,15 @@
 import BackgroundMusic from "@/components/Invitation/BackgroundMusic";
 import RSVPForm from "@/components/RSVP/RSVPForm";
 import RSVPPopup from "@/components/RSVP/RSVPPopup";
+import { getAssetUrl } from "@/lib/getAssetUrl";
 import { useEffect, useRef, useState } from "react";
 import ArchHero from "./ArchHero";
 import { FontSizeControl } from "./common/FontSizeController";
 import { FlowerCanvas } from "./FlowerCanvas";
 import AccountSection from "./Invitation/AccountSection";
 import CalendarSection from "./Invitation/CalendarSection";
-import GallerySection from "./Invitation/Gallery";
+import { GallerySection } from "./Invitation/Gallery";
+import { GalleryTabs } from "./Invitation/GalleryTabs";
 import GreetingSection from "./Invitation/GreetingSection";
 import InformationSection from "./Invitation/InformationSection";
 import LocationSection from "./Invitation/LocationSection";
@@ -46,7 +48,7 @@ const Invitation = ({ variant }: Props) => {
         sectionRef={section1Ref}
         //variant="blossom"
       />
-      <ArchHero ref={section1Ref} imageSrc="/photo/first.gif" />
+      <ArchHero ref={section1Ref} imageSrc={getAssetUrl("photobooth.webp")} />
       <GreetingSection variant={variant ? "yunasco" : "modern"} />
       {variant ? (
         variant === "yuna" ? (
@@ -84,7 +86,7 @@ const Invitation = ({ variant }: Props) => {
 const YunaVersion = () => (
   <>
     <CalendarSection />
-    <GallerySection />
+    <GalleryTabs />
     <LocationSection />
     <InformationSection />
     <AccountSection />
@@ -94,7 +96,6 @@ const YunaVersion = () => (
 const ScoVersion = () => (
   <>
     <CalendarSection />
-    <GallerySection />
     {/* <LocationSection /> */}
     <InformationSection />
     <AccountSection />

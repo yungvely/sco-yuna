@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.section`
-  padding: 80px 24px;
+  padding: 55px 24px;
   text-align: center;
 `;
 
@@ -43,12 +43,9 @@ type Props = {
 };
 
 const ShareSection = ({ variant }: Props) => {
-  const resURL =
-    "https://sco-yuna.kr/" + variant
-      ? variant === "yuna"
-        ? "yuna"
-        : "sco"
-      : "";
+  const resURL = `https://sco-yuna.kr/${
+    variant ? (variant === "yuna" ? "yuna" : "sco") : ""
+  }`;
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
