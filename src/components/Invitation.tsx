@@ -48,7 +48,7 @@ const Invitation = ({ variant }: Props) => {
         sectionRef={section1Ref}
         //variant="blossom"
       />
-      <ArchHero ref={section1Ref} imageSrc={getAssetUrl("photobooth.webp")} />
+      <ArchHero ref={section1Ref} imageSrc={getAssetUrl("first.gif")} />
       <GreetingSection variant={variant ? "yunasco" : "modern"} />
       {variant ? (
         variant === "yuna" ? (
