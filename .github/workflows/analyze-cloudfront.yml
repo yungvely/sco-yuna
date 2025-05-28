@@ -1,0 +1,28 @@
+name: Analyze CloudFront Logs
+
+on:
+  schedule:
+    - cron: "0 1 * * *" # 매일 오전 10시 (KST)
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Run analysis script
+        env:
+          S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+          S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+          FIREBASE_PROJECT_ID: "wedding-invite-1f1e6"
+          GOOGLE_APPLICATION_CREDENTIALS_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: node scripts/analyzeLogsAndSaveToFirestore.js
