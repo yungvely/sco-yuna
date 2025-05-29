@@ -28,7 +28,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Compile TypeScript
-        run: tsc --project tsconfig.scripts.json
+        run: yarn tsc -p tsconfig.scripts.json
 
       - name: Run log analyzer
-        run: node dist/scripts/analyzeCloudfrontLogs.js
+        run: node dist/analyzeCloudfrontLogs.js
