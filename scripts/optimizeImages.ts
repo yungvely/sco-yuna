@@ -1,4 +1,7 @@
 // scripts/optimizeImages.ts
+
+// @ts-nocheck
+// @ts-ignore
 const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "opt": "node --loader ts-node/esm scripts/optimizeImages.ts",
-    "upload:img": "yarn opt && node --loader ts-node/esm scripts/uploadPhotosToS3.ts"
+    "upload:img": "yarn opt && node --loader ts-node/esm scripts/uploadPhotosToS3.ts",
+    "build:js": "yarn tsc --project tsconfig.scripts.json"
   },
   "dependencies": {
     "@aws-sdk/client-cloudfront": "^3.817.0",

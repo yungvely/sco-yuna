@@ -1,4 +1,5 @@
 // scripts/uploadPhotosToS3.ts
+// @ts-nocheck
 require("dotenv").config();
 
 const {

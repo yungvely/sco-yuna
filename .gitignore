@@ -46,3 +46,5 @@ public/photo
 
 .s3-uploaded.json
 .webp-hash.json
+
+dist/

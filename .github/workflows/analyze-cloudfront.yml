@@ -24,8 +24,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install deps
+      - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Compile TypeScript
+        run: tsc --project tsconfig.scripts.json
+
       - name: Run log analyzer
-        run: npx ts-node scripts/analyzeCloudfrontLogs.ts
+        run: node dist/scripts/analyzeCloudfrontLogs.js
