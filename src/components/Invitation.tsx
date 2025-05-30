@@ -51,7 +51,7 @@ const Invitation = ({ variant }: Props) => {
         <FlowerCanvas sectionRef={section1Ref} />
       </ArchHero>
 
-      <GreetingSection variant={variant ? "yunasco" : "modern"} />
+      <GreetingSection variant={variant ? variant : "modern"} />
       {variant ? (
         variant === "yuna" ? (
           <YunaVersion />

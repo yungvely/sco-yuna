@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
-type GreetingVariant = "yunasco" | "modern";
+type GreetingVariant = "yuna" | "sco" | "modern";
 
 interface Props {
   variant?: GreetingVariant;
@@ -49,25 +49,30 @@ const Center = styled.div`
   align-items: center;
   justify-content: center;
 `;
-// color: ${({ active, red }) => (active ? "#fff" : red ? "#d9534f" : "#333")};
 
-const BorderInvite = styled.div<{ position?: "top" | "bottom" }>`
+const BorderInvite = styled.div<{
+  position?: "top" | "bottom";
+  variant?: "yuna";
+}>`
   width: calc(100% + 48px);
-  height: 120px;
+  height: ${({ variant }) => (variant === "yuna" ? "100" : "220")}px;
   background-color: transparent;
-  border-top-left-radius: 10% 100%;
+  border-top-left-radius: ${({ variant }) =>
+      variant === "yuna" ? "10% " : "100% "}
+    100%;
   border-top-right-radius: 100% 100%;
   box-shadow: 1px -12px 17px 5px rgba(0, 0, 0, 0.05);
   position: relative;
   z-index: 1;
-  margin: 0 -24px -30px;
-  ${({ position }) =>
+  ${({ position, variant }) =>
     position === "bottom"
       ? `
-        transform: rotate(180deg);
-        margin: -25px -24px 0;
-      `
-      : ""};
+  transform: rotate(180deg);
+  margin: ${variant === "yuna" ? "-25px -24px 0" : "-110px -24px 0"};
+  `
+      : ` margin: ${
+          variant === "yuna" ? "0 -24px -30px" : "0 -24px -140px"
+        }; `};
   &::before {
     content: "";
     position: absolute;
@@ -99,7 +104,7 @@ const GreetingSection = ({ variant = "modern" }: Props) => {
       transition={{ duration: 0.8 }}
     >
       <Wrapper>
-        <BorderInvite />
+        <BorderInvite variant={variant === "yuna" ? "yuna" : undefined} />
         <Title>INVITATION</Title>
         {variant === "modern" ? (
           <MainText>
@@ -133,7 +138,10 @@ const GreetingSection = ({ variant = "modern" }: Props) => {
             박경숙의 딸 안윤아
           </Center>
         </Names>
-        <BorderInvite position="bottom" />
+        <BorderInvite
+          position="bottom"
+          variant={variant === "yuna" ? "yuna" : undefined}
+        />
       </Wrapper>
     </motion.div>
   );

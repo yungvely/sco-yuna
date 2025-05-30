@@ -52,7 +52,7 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
       y = Math.random() * window.innerHeight * 2 - window.innerHeight;
       w = 25 + Math.random() * 15;
       h = 20 + Math.random() * 10;
-      opacity = this.w / 40;
+      opacity = this.w / 80;
       flip = Math.random();
       xSpeed = 0.6 + Math.random() * 1.0;
       ySpeed = 0.4 + Math.random() * 0.6;
@@ -131,7 +131,7 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
           x: Math.random() * window.innerWidth,
           y: Math.random() * window.innerHeight,
           r: 0.8 + Math.random() * 1.5,
-          size: 25 + Math.random() * 15,
+          size: 22 + Math.random() * 12,
           angle: Math.random() * 360,
         }));
       }
@@ -184,7 +184,7 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
         width: "100%",
         height: "100%",
         zIndex: 1,
-        opacity: visible ? 0.7 : 0,
+        opacity: visible ? 1 : 0,
         transition: "opacity 0.5s ease",
       }}
     />

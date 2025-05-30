@@ -90,7 +90,7 @@ const Label = styled.div`
 const Value = styled.span`
   font-size: 1.5rem;
   padding: 4px 10px;
-  background: #eee;
+  background: #fff;
   border-radius: 4px;
 `;
 

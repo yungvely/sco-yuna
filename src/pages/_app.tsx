@@ -9,9 +9,11 @@ import { useFontStore } from "../store/fontStore";
 
 const AppWrapper = styled.div`
   background: ${({ theme }) => theme.colors.background};
+  min-width: 320px;
   max-width: 425px;
   margin: 0 auto;
   position: relative;
+  overflow-x: scroll;
 `;
 export default function MyApp({ Component, pageProps }: AppProps) {
   const scale = useFontStore((s) => s.scale);

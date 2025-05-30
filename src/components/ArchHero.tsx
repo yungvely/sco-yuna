@@ -9,12 +9,11 @@ import WaveEffect from "./WaveEffect";
 const Wrapper = styled.section`
   position: relative;
   width: 100%;
-  height: 80vh;
-  max-height: 640px;
+  max-height: 600px;
   max-width: 100%;
-
-  aspect-ratio: 430 / 640;
-  margin: 0 auto;
+  aspect-ratio: 430 / 600;
+  margin: 0 auto 20px;
+  padding: 0 24px;
 
   overflow: hidden;
 `;
@@ -36,14 +35,14 @@ export const SvgDefs = () => (
     <defs>
       <mask id="arch-hole-mask" maskUnits="userSpaceOnUse">
         <g transform="translate(0, 0)">
-          <rect width="430" height="700" fill="white" />
+          <rect width="430" height="600" fill="white" />
           <path
             fill="black"
             d="
             M 50 190
             A 200 200 0 0 1 380 190
-            L 380 580
-            L 50 580
+            L 380 600
+            L 50 600
             Z
             "
           />
@@ -59,18 +58,18 @@ export const ArchMaskOverlay = styled.div`
   top: 0;
   transform: translateX(-50%);
   width: 430px;
-  height: 700px;
+  height: 640px;
   background: white;
 
   mask: url(#arch-hole-mask);
   mask-repeat: no-repeat;
   mask-size: contain;
-  mask-position: center;
+  mask-position: center bottom;
 
   -webkit-mask: url(#arch-hole-mask);
   -webkit-mask-repeat: no-repeat;
   -webkit-mask-size: contain;
-  -webkit-mask-position: center;
+  -webkit-mask-position: center bottom;
 
   mask-composite: exclude;
   -webkit-mask-composite: destination-out;
@@ -84,9 +83,9 @@ const CanvasWrapper = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  height: 80%;
   pointer-events: none;
   z-index: 1;
+  opacity: 0.7;
 `;
 
 type Props = {

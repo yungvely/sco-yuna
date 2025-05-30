@@ -20,6 +20,16 @@ const Wrapper = styled.section`
   text-align: center;
 `;
 
+const Title = styled.h3`
+  color: #b37542;
+  letter-spacing: 1px;
+`;
+
+const Heading = styled.h2`
+  font-size: 1.5rem;
+  margin: 8px 0 24px;
+`;
+
 const TabRow = styled.div`
   display: flex;
   justify-content: center;
@@ -30,7 +40,7 @@ const TabRow = styled.div`
 
 const Tab = styled.button<{ active: boolean }>`
   padding: 8px 16px;
-  background: ${({ active }) => (active ? "#b37542" : "#eee")};
+  background: ${({ active }) => (active ? "#b37542" : "#fff")};
   color: ${({ active }) => (active ? "#fff" : "#444")};
   border: none;
   border-radius: 20px;
@@ -150,6 +160,9 @@ export const GalleryTabs = () => {
 
   return (
     <Wrapper>
+      <Title>GALLERY</Title>
+      <Heading>웨딩 갤러리</Heading>
+
       <TabRow>
         {tabNames.map((name, i) => (
           <Tab
