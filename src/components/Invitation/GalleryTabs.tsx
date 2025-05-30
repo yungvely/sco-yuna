@@ -15,7 +15,8 @@ const tabNames = ["studio", "wedding", "tokyo", "hanbok"];
 const IMAGES_PER_PANEL = 6;
 
 const Wrapper = styled.section`
-  padding: 55px 24px;
+  position: relative;
+  padding: 60px 24px;
   text-align: center;
 `;
 

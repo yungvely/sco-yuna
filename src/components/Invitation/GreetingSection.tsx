@@ -11,9 +11,11 @@ interface Props {
 }
 
 const Wrapper = styled.section`
-  padding: 55px 24px;
+  position: relative;
+  padding: 60px 24px;
   text-align: center;
   color: #333;
+  overflow: hidden;
 `;
 
 const Title = styled.h2`
@@ -47,6 +49,39 @@ const Center = styled.div`
   align-items: center;
   justify-content: center;
 `;
+// color: ${({ active, red }) => (active ? "#fff" : red ? "#d9534f" : "#333")};
+
+const BorderInvite = styled.div<{ position?: "top" | "bottom" }>`
+  width: calc(100% + 48px);
+  height: 120px;
+  background-color: transparent;
+  border-top-left-radius: 10% 100%;
+  border-top-right-radius: 100% 100%;
+  box-shadow: 1px -12px 17px 5px rgba(0, 0, 0, 0.05);
+  position: relative;
+  z-index: 1;
+  margin: 0 -24px -30px;
+  ${({ position }) =>
+    position === "bottom"
+      ? `
+        transform: rotate(180deg);
+        margin: -25px -24px 0;
+      `
+      : ""};
+  &::before {
+    content: "";
+    position: absolute;
+    top: 12px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-top-left-radius: 100% 100%;
+    border-top-right-radius: 100% 100%;
+    border-top: 2px solid #d4af37;
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+`;
 
 const GreetingSection = ({ variant = "modern" }: Props) => {
   const { ref, inView } = useInView({
@@ -64,6 +99,7 @@ const GreetingSection = ({ variant = "modern" }: Props) => {
       transition={{ duration: 0.8 }}
     >
       <Wrapper>
+        <BorderInvite />
         <Title>INVITATION</Title>
         {variant === "modern" ? (
           <MainText>
@@ -97,6 +133,7 @@ const GreetingSection = ({ variant = "modern" }: Props) => {
             박경숙의 딸 안윤아
           </Center>
         </Names>
+        <BorderInvite position="bottom" />
       </Wrapper>
     </motion.div>
   );

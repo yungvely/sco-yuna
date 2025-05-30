@@ -6,8 +6,32 @@ import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
 
 const Wrapper = styled.section`
-  padding: 55px 24px;
+  position: relative;
+  padding: 60px 24px;
   text-align: center;
+
+  background: linear-gradient(to bottom, white 0%, #fffcee 100%);
+  border-bottom-right-radius: 15vw;
+
+  &:before {
+    content: "";
+    background-color: #fffcee;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 15vw;
+    height: 15vw;
+  }
+  &:after {
+    content: "";
+    background-color: #fff;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 15vw;
+    height: 15vw;
+    border-top-left-radius: 15vw;
+  }
 `;
 
 const DateText = styled.h3`
@@ -18,7 +42,11 @@ const DateText = styled.h3`
 const SubText = styled.p`
   color: #999;
   font-size: 0.875rem;
-  margin-bottom: 32px;
+  margin-bottom: 8px;
+
+  & + & {
+    margin-bottom: 32px;
+  }
 `;
 
 const Calendar = styled.div`
@@ -133,7 +161,7 @@ const CalendarSection = () => {
       <Wrapper>
         <DateText>2025.08.23</DateText>
         <SubText>토요일 낮 12시 30분</SubText>
-
+        <SubText>Saturday, August 23, 2025 | PM 12:30</SubText>
         <Calendar>
           {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
             <Day key={day} red={day === "일"}>
@@ -152,7 +180,6 @@ const CalendarSection = () => {
             );
           })}
         </Calendar>
-
         <DdayWrap>
           <Countdown>
             <Block>

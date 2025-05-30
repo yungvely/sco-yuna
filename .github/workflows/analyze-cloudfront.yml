@@ -2,7 +2,7 @@ name: Analyze CloudFront Logs
 
 on:
   schedule:
-    - cron: "0 1 * * *" # 매일 오전 10시 (KST)
+    - cron: "59 14 * * *" # 매일 23:59 (KST 기준)
   workflow_dispatch:
 
 jobs:

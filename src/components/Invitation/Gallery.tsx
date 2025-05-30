@@ -8,7 +8,8 @@ import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 
 const Wrapper = styled.section`
-  padding: 55px 24px;
+  position: relative;
+  padding: 60px 24px;
   text-align: center;
 `;
 

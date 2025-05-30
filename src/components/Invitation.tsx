@@ -43,12 +43,14 @@ const Invitation = ({ variant }: Props) => {
 
   return (
     <>
-      <BackgroundMusic />
-      <FlowerCanvas
+      {/* <FlowerCanvas
         sectionRef={section1Ref}
         //variant="blossom"
-      />
-      <ArchHero ref={section1Ref} imageSrc={getAssetUrl("first.gif")} />
+      /> */}
+      <ArchHero ref={section1Ref} imageSrc={getAssetUrl("first.gif")}>
+        <FlowerCanvas sectionRef={section1Ref} />
+      </ArchHero>
+
       <GreetingSection variant={variant ? "yunasco" : "modern"} />
       {variant ? (
         variant === "yuna" ? (
@@ -66,6 +68,7 @@ const Invitation = ({ variant }: Props) => {
           <FontSizeControl />
         </>
       )}
+      <BackgroundMusic />
       <RSVPSection onClick={() => setShowForm(true)} />
       <ShareSection variant={variant} />
       {showPopup && (

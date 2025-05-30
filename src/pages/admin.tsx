@@ -89,6 +89,7 @@ const AccordionContent = styled.div`
 
 const AdminPage = () => {
   const [allData, setAllData] = useState<any[]>([]);
+  const [logData, setLogData] = useState<any[]>([]);
   const [filtered, setFiltered] = useState<any[]>([]);
   const [side, setSide] = useState<"groom" | "bride">("groom");
   const [password, setPassword] = useState("");
@@ -100,12 +101,21 @@ const AdminPage = () => {
 
   useEffect(() => {
     if (!authorized) return;
-    const fetchRSVP = async () => {
-      const querySnapshot = await getDocs(collection(db, "rsvp"));
-      const docs = querySnapshot.docs.map((doc) => doc.data());
-      setAllData(docs);
+
+    const fetchData = async () => {
+      const rsvpSnapshot = await getDocs(collection(db, "rsvp"));
+      const logSnapshot = await getDocs(collection(db, "cloudfrontLogs"));
+
+      const rsvpData = rsvpSnapshot.docs.map((doc) => doc.data());
+      const logDocs = logSnapshot.docs
+        .map((doc) => doc.data())
+        .sort((a, b) => b.date.localeCompare(a.date));
+
+      setAllData(rsvpData);
+      setLogData(logDocs);
     };
-    fetchRSVP();
+
+    fetchData();
   }, [authorized]);
 
   useEffect(() => {
@@ -113,7 +123,7 @@ const AdminPage = () => {
     for (const r of allData) {
       if (r.side === side) {
         const key = `${r.name}_${r.side}`;
-        latestByName.set(key, r); // 최신 값만 유지
+        latestByName.set(key, r);
       }
     }
     setFiltered(Array.from(latestByName.values()));
@@ -272,23 +282,25 @@ const AdminPage = () => {
         )}
       </Accordion>
 
-      <h2 style={{ marginTop: "2rem" }}>✅ RSVP 리스트</h2>
+      <h2 style={{ marginTop: "3rem" }}>📊 CloudFront 캐시 통계</h2>
       <Table>
         <thead>
           <tr>
-            <Th>이름</Th>
-            <Th>참석 여부</Th>
-            <Th>인원</Th>
-            <Th>메시지</Th>
+            <Th>날짜</Th>
+            <Th>총 요청 수</Th>
+            <Th>Hit</Th>
+            <Th>Miss</Th>
+            <Th>Hit Rate (%)</Th>
           </tr>
         </thead>
         <tbody>
-          {filtered.map((r, i) => (
-            <tr key={i}>
-              <Td>{r.name}</Td>
-              <Td>{r.attending === "yes" ? "참석" : "불참"}</Td>
-              <Td>{r.count || 1}</Td>
-              <Td>{r.message || "-"}</Td>
+          {logData.map((log, idx) => (
+            <tr key={idx}>
+              <Td>{log.date}</Td>
+              <Td>{log.totalRequests}</Td>
+              <Td>{log.hit}</Td>
+              <Td>{log.miss}</Td>
+              <Td>{log.hitRate}</Td>
             </tr>
           ))}
         </tbody>

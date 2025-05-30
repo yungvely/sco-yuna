@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useRef, useState } from "react";
 
 type Props = {
@@ -12,6 +13,7 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
   const [visible, setVisible] = useState(true);
   const petalsRef = useRef<any[]>([]);
   const petalImgRef = useRef<HTMLImageElement | null>(null);
+  const scrollRef = useRef(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -22,18 +24,13 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
     const dpr = window.devicePixelRatio || 1;
 
     const resizeCanvas = () => {
-      const containerWidth = Math.min(window.innerWidth, 425);
-      const maxHeight = 800;
-
-      // 기준 높이: sectionRef의 clientHeight
-      const sectionHeight =
-        sectionRef.current?.clientHeight || window.innerHeight;
-      const containerHeight = Math.min(sectionHeight, maxHeight);
+      const containerWidth = sectionRef.current?.clientWidth || 425;
+      const containerHeight = sectionRef.current?.clientHeight || 600;
 
       canvas.width = containerWidth * dpr;
       canvas.height = containerHeight * dpr;
 
-      ctx.setTransform(1, 0, 0, 1, 0, 0); // reset transform
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale(dpr, dpr);
 
       canvas.style.width = `${containerWidth}px`;
@@ -64,6 +61,8 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
       draw() {
         if (!ctx || !petalImgRef.current) return;
 
+        const scrollOffset = scrollRef.current * 0.2;
+
         if (this.y > window.innerHeight || this.x > window.innerWidth) {
           this.x = -petalImgRef.current.width;
           this.y = Math.random() * window.innerHeight * 2 - window.innerHeight;
@@ -76,7 +75,7 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
         ctx.drawImage(
           petalImgRef.current,
           this.x,
-          this.y,
+          this.y + scrollOffset,
           this.w * (0.6 + Math.abs(Math.cos(this.flip)) / 3),
           this.h * (0.8 + Math.abs(Math.sin(this.flip)) / 5)
         );
@@ -101,6 +100,8 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
       if (variant === "blossom") {
         petalsRef.current.forEach((p) => p.animate());
       } else {
+        const scrollOffset = scrollRef.current * 0.2;
+
         petalsRef.current.forEach((p) => {
           p.y += p.r;
           p.x += Math.sin((p.angle * Math.PI) / 180) * 0.6;
@@ -112,7 +113,7 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
           }
 
           ctx.save();
-          ctx.translate(p.x, p.y);
+          ctx.translate(p.x, p.y + scrollOffset);
           ctx.rotate((p.angle * Math.PI) / 180);
           ctx.drawImage(petalImage, -p.size / 2, -p.size / 2, p.size, p.size);
           ctx.restore();
@@ -144,29 +145,46 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
     }
 
     const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
-      { threshold: 0.2 }
+      ([entry]) => {
+        setVisible(entry.isIntersecting);
+        if (canvas.style) {
+          canvas.style.opacity = `${entry.intersectionRatio}`;
+        }
+      },
+      {
+        threshold: Array.from({ length: 21 }, (_, i) => i / 20),
+      }
     );
     observer.observe(sectionRef.current);
+
+    const onScroll = () => {
+      if (!sectionRef.current) return;
+      const rect = sectionRef.current.getBoundingClientRect();
+      scrollRef.current = -rect.top;
+    };
+
+    window.addEventListener("scroll", onScroll);
 
     return () => {
       cancelAnimationFrame(animationRef.current);
       observer.disconnect();
       window.removeEventListener("resize", resizeCanvas);
+      window.removeEventListener("scroll", onScroll);
     };
-  }, [sectionRef, variant, visible]);
+  }, [sectionRef, variant]);
 
   return (
     <canvas
       ref={canvasRef}
       style={{
-        position: "fixed",
+        position: "absolute",
         top: 0,
-        left: "50%",
-        transform: "translateX(-50%)",
+        left: 0,
         pointerEvents: "none",
+        width: "100%",
+        height: "100%",
         zIndex: 1,
-        opacity: visible ? 0.85 : 0,
+        opacity: visible ? 0.7 : 0,
         transition: "opacity 0.5s ease",
       }}
     />

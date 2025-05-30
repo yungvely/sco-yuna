@@ -5,7 +5,8 @@ import { useState } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.section`
-  padding: 55px 24px;
+  position: relative;
+  padding: 60px 24px;
   text-align: center;
 `;
 

@@ -46,7 +46,8 @@ export const GlobalStyle = createGlobalStyle`
   html, body {
     background-color: #f6f6f6;
     color: ${({ theme }) => theme.colors.text};
-
+    word-break: auto-phrase;
+    word-wrap: break-word;
 
     touch-action: manipulation;
     -ms-touch-action: manipulation;
@@ -69,7 +70,10 @@ export const GlobalStyle = createGlobalStyle`
   input, textarea {
     font-size: 16px; /* iOS는 16px 미만이면 자동 확대 발생 가능 */
   }
-  
+
+  .yarl__portal_open {
+    z-index:99999;
+  }
   .yarl__slide_image {
     max-width: 425px !important;
     margin: 0 auto;
