@@ -109,8 +109,10 @@ export const HandwritingText = ({
         const font = fonts[i];
         const size = sizes[i];
         const glyphs = font.stringToGlyphs(line);
+
         const width = glyphs.reduce(
-          (acc, g) => acc + g.advanceWidth * (size / font.unitsPerEm),
+          (acc: number, g: typeof opentype) =>
+            acc + g.advanceWidth * (size / font.unitsPerEm),
           0
         );
         lineWidths[i] = width;
@@ -238,7 +240,7 @@ export const HandwritingText = ({
         strokeDashoffset: [anime.setDashoffset, 0],
         easing: "easeInOutSine",
         duration: 300,
-        delay: (_, i) => {
+        delay: (_: unknown, i: number) => {
           let charCount = 0;
           let lineIndex = 0;
           for (const line of textLines) {
@@ -256,7 +258,7 @@ export const HandwritingText = ({
         fillOpacity: [0, 1],
         easing: "easeOutQuad",
         duration: 200,
-        delay: (_, i) => {
+        delay: (_: unknown, i: number) => {
           let charCount = 0;
           let lineIndex = 0;
           for (const line of textLines) {
