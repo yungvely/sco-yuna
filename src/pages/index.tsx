@@ -76,17 +76,11 @@ export default function HomePage({ nickname, variant }: Props) {
         />
 
         <meta name="description" content="소중한 분들을 초대합니다" />
-        {/* OpenGraph / 카카오 미리보기 */}
         <meta property="og:title" content="25.8.23 석호 ❤️ 윤아 결혼합니다" />
         <meta property="og:description" content="소중한 분들을 초대합니다" />
-        {/* <meta
-          property="og:image"
-          content="https://images.theirmood.com/resources/81284/card/onir9Erp90/R4ODazWRcC.jpg?f=webp&w=1280"
-        /> */}
-
         <meta
           property="og:image"
-          content="https://assets.sco-yuna.kr/og/default.webp"
+          content="https://assets.sco-yuna.kr/og/og_image.webp"
         />
         <meta property="og:image:width" content="768" />
         <meta property="og:image:height" content="1149" />
@@ -100,7 +94,7 @@ export default function HomePage({ nickname, variant }: Props) {
         <meta name="twitter:description" content="소중한 분들을 초대합니다" />
         <meta
           name="twitter:image"
-          content="https://images.theirmood.com/resources/81284/card/onir9Erp90/R4ODazWRcC.jpg?f=webp&w=1280"
+          content="https://assets.sco-yuna.kr/og/og_image.webp"
         />
       </Head>
 
