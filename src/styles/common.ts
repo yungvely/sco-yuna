@@ -11,5 +11,5 @@ export const FixedWrapper = styled.div<{ position?: "top" | "bottom" }>`
   padding: 0 12px;
   display: flex;
   justify-content: flex-end;
-  z-index: 99999;
+  z-index: 999;
 `;

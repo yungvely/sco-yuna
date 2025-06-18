@@ -3,11 +3,39 @@
 
 import Invitation from "@/components/Invitation";
 import Opening from "@/components/Opening";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
-export default function HomePage() {
-  const [openingFinished, setOpeningFinished] = useState(false);
+type Props = {
+  nickname: string | null;
+  variant: "yuna" | "sco" | null;
+};
+
+export const getServerSideProps: GetServerSideProps<Props> = async (
+  context
+) => {
+  const { req, query } = context;
+
+  const pathname = req.url?.split("?")[0] || "/"; // 정확한 경로만 추출
+  let nickname: string | null = null;
+  let variant: "yuna" | "sco" | null = null;
+
+  if (pathname.startsWith("/yuna")) {
+    variant = "yuna";
+  } else if (pathname.startsWith("/sco")) {
+    variant = "sco";
+  }
+
+  if (typeof query.name === "string" && query.name.trim()) {
+    nickname = query.name;
+  }
+
+  return { props: { nickname, variant } };
+};
+
+export default function HomePage({ nickname, variant }: Props) {
+  const [opening, setOpening] = useState(true);
   useEffect(() => {
     const preventZoom = (e: TouchEvent) => {
       if (e.touches.length > 1) {
@@ -22,9 +50,24 @@ export default function HomePage() {
     };
   }, []);
 
+  console.log(variant, "variant");
+
+  // useEffect(() => {
+  //   if (opening) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "auto"; // 또는 'unset'
+  //   }
+
+  //   return () => {
+  //     document.body.style.overflow = "auto"; // 컴포넌트 언마운트 시 복원
+  //   };
+  // }, [opening]);
+
+  var yunaTitle = "25.8.23 석호 ❤️ 윤아 결혼합니다";
+  var scoTitle = "25.8.23 석호 ❤️ 윤아 결혼합니다";
   return (
     <>
-      {/* Head는 항상 렌더링 */}
       <Head>
         <title>석호 ❤️ 윤아 결혼합니다</title>
         <meta
@@ -36,10 +79,18 @@ export default function HomePage() {
         {/* OpenGraph / 카카오 미리보기 */}
         <meta property="og:title" content="25.8.23 석호 ❤️ 윤아 결혼합니다" />
         <meta property="og:description" content="소중한 분들을 초대합니다" />
-        <meta
+        {/* <meta
           property="og:image"
           content="https://images.theirmood.com/resources/81284/card/onir9Erp90/R4ODazWRcC.jpg?f=webp&w=1280"
+        /> */}
+
+        <meta
+          property="og:image"
+          content="https://assets.sco-yuna.kr/og/default.webp"
         />
+        <meta property="og:image:width" content="768" />
+        <meta property="og:image:height" content="1149" />
+
         <meta property="og:url" content="https://sco-yuna.kr" />
         <meta property="og:type" content="website" />
 
@@ -53,10 +104,9 @@ export default function HomePage() {
         />
       </Head>
 
-      {openingFinished ? (
-        <Invitation />
-      ) : (
-        <Opening onEnd={() => setOpeningFinished(true)} />
+      <Invitation variant={variant} openingEnd={opening} />
+      {opening && (
+        <Opening nickname={nickname} onEnd={() => setOpening(false)} />
       )}
     </>
   );

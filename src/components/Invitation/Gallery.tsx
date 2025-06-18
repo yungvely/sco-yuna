@@ -6,21 +6,12 @@ import "react-loading-skeleton/dist/skeleton.css";
 import styled from "styled-components";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
+import { Heading, Title } from "./styles";
 
 const Wrapper = styled.section`
   position: relative;
   padding: 60px 24px;
   text-align: center;
-`;
-
-const Title = styled.h3`
-  color: #b37542;
-  letter-spacing: 1px;
-`;
-
-const Heading = styled.h2`
-  font-size: 1.5rem;
-  margin: 8px 0 24px;
 `;
 
 const Grid = styled.div`
@@ -143,6 +134,28 @@ export const GallerySection = ({ variant }: GallerySectionProps) => {
     };
     load();
   }, [variant]);
+
+  useEffect(() => {
+    if (selectedIndex !== null) {
+      // Lightbox 열릴 때 브라우저 히스토리에 dummy push
+      window.history.pushState({ lightbox: true }, "");
+
+      const handlePopState = (e: PopStateEvent) => {
+        setSelectedIndex(null); // 뒤로가기 시 Lightbox 닫기
+      };
+
+      window.addEventListener("popstate", handlePopState);
+
+      return () => {
+        window.removeEventListener("popstate", handlePopState);
+
+        // Lightbox가 닫힐 때, 추가된 히스토리 스택 제거
+        if (window.history.state?.lightbox) {
+          window.history.back();
+        }
+      };
+    }
+  }, [selectedIndex]);
 
   const handleExpand = () => {
     if (allImages) {

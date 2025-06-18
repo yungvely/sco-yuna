@@ -1,128 +1,201 @@
 // components/Opening.tsx
 "use client";
 
-import { useEffect } from "react";
-import styled from "styled-components";
+import { useState } from "react";
+import styled, { css, keyframes } from "styled-components";
+import { HandwritingText } from "./common/HandwritingText";
 
-const Wrapper = styled.div`
+const fadeOut = keyframes`
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+`;
+
+const Wrapper = styled.div<{ $isFadingOut?: boolean }>`
   height: 100vh;
   display: flex;
   align-items: center;
   overflow: hidden;
   justify-content: center;
-  justify-self: anchor-center;
-`;
-
-const CenterImage = styled.img`
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
-  position: absolute;
+  align-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.4);
+  transition: opacity 0.8s ease-in-out;
+  position: fixed;
   top: 0;
   left: 0;
-  z-index: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 99999;
+  pointer-events: none;
+
+  ${({ $isFadingOut }) =>
+    $isFadingOut &&
+    css`
+      animation: ${fadeOut} 1.5s forwards;
+    `}
 `;
-
-const AnimatedText = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  z-index: 2;
-  position: absolute;
-  font-size: 3rem;
-  color: transparent;
-  left: 0;
-  text-align: center;
-  width: 100%;
-
-  .line {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+const heartbeat = keyframes`
+  0% {
+    transform: scale(0.75);
   }
-
-  .letter {
-    position: relative;
-    display: inline-block;
-    animation: overlay 3s infinite ease-out;
-    font-family: "안창호체", sans-serif;
+  50% {
+    transform: scale(1);
   }
+  100% {
+    transform: scale(0.75);
+  }
+`;
+const Heart = styled.div`
+  position: relative;
+  width: 50px;
+  height: 45px;
+  margin: 0 auto;
+  top: -100px;
+  margin-bottom: -80px;
+  animation: ${heartbeat} 1.3s linear infinite;
+  transform-origin: center center;
 
-  .letter::before,
-  .letter::after {
-    content: attr(data-char);
+  &::before,
+  &::after {
+    content: "";
     position: absolute;
     top: 0;
+    width: 25px;
+    height: 40px;
+    border-radius: 25px 25px 0 0;
+  }
+
+  &::before {
+    left: 25px;
+    background: linear-gradient(to top right, #feada6 0%, #f5efef 100%);
+    transform: rotate(-45deg);
+    transform-origin: 0 100%;
+  }
+
+  &::after {
     left: 0;
-    pointer-events: none;
-  }
-
-  .letter::before {
-    color: gray;
-    -webkit-text-stroke: 0.01em rgba(0, 0, 0, 0.3);
-  }
-
-  .letter::after {
-    background-image: linear-gradient(90deg, white 50%, #f5f5f5);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    transform: rotateY(-30deg) skew(0, -10deg);
-    transform-origin: left;
-    animation: overlay 3s infinite ease-out;
-  }
-
-  @keyframes overlay {
-    0%,
-    20%,
-    100% {
-      transform: rotateY(-30deg) skew(0, -10deg);
-    }
-    10% {
-      transform: rotateY(0deg) skew(0, 0);
-    }
+    background: linear-gradient(to top left, #feada6 0%, #f5efef 100%);
+    transform: rotate(45deg);
+    transform-origin: 100% 100%;
   }
 `;
 
+const SVGContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+`;
+const ShadedText = styled.span`
+  font-size: 48px;
+  font-weight: bold;
+  color: #fff;
+  font-family: "Mitchell", cursive;
+
+  text-shadow: 1px 1px 0 #bfa25a, 2px 2px 0 #bfa25a, 3px 3px 0 #bfa25a,
+    4px 4px 0 #bfa25a, 5px 5px 0 #bfa25a, 6px 6px 0 #bfa25a;
+
+  /* 안티앨리어싱 효과 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+`;
 const Opening = ({
   onEnd,
-  message = "We're\ngetting married",
-  imageSrc = "/test.png",
+  nickname,
 }: {
   onEnd: () => void;
-  message?: string;
-  imageSrc?: string;
+  nickname: string | null;
 }) => {
-  // const [visible, setVisible] = useState(true);
+  const hasNickname = !!nickname;
+  const [isFadingOut, setIsFadingOut] = useState(false);
+  const inviteFont = hasNickname
+    ? "/fonts/노희찬체.otf"
+    : "/fonts/노희찬체.otf";
+  const fontUrls = [
+    inviteFont,
+    "/fonts/Mitchell.otf",
+    "/fonts/HetigonVintage.otf",
+    "/fonts/Mitchell.otf",
+  ];
+  const fontSizes = [30, 50, 55, 40];
+  const lineHeights = [1.2, 1.8, 1.8, 1.2];
+  const strokeWidths = [1, 1.5, 1.5, 1.3];
+  const strokeColors = ["#fff", "#fff", "rgba(63, 81, 181,0.7)", "#f1e0a5"];
+  const fillColors = ["#fff", "#fff", "#fdf8d0", "#3F51B5"];
+  const lineDelays = [80, 300, 50, 0];
+  // const lineDelays = [100, 200, 300, 800];
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      // setVisible(false);
-      onEnd();
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [onEnd]);
+  const lines = hasNickname
+    ? [
+        `Only for you, ${nickname}`,
+        "Seok Ho & Yun A",
+        "2025. 8. 23",
+        "Save the Date",
+      ]
+    : [
+        "우리의 결혼식에 초대합니다",
+        "Seok Ho & Yun A",
+        "2025. 8. 23",
+        "Save the Date",
+      ];
 
   return (
-    <Wrapper>
-      {/* <CenterImage src={imageSrc} alt="Opening image" /> */}
-      {/* {visible && ( */}
-      <AnimatedText>
-        {message.split("\n").map((line, lineIdx) => (
-          <div className="line" key={lineIdx}>
-            {line.split("").map((char, i) => (
-              <span
-                className="letter"
-                data-char={char}
-                key={i}
-                style={{ animationDelay: `${i * 0.15}s` }}
-              >
-                {char === " " ? "\u00A0" : char}
-              </span>
-            ))}
-          </div>
-        ))}
-      </AnimatedText>
-      {/* )} */}
+    <Wrapper $isFadingOut={isFadingOut}>
+      <Heart />
+      {/* <StyledHeart>
+        <HeartSVG />
+      </StyledHeart> */}
+      {/* {nickname && (
+        <Typography font={5} size={1.8} color="#000">
+          only for {nickname}
+        </Typography>
+      )} */}
+      {/* 
+      Seok Ho & Yun A 
+      한석호 & 안윤아
+      */}
+
+      <SVGContainer>
+        <HandwritingText
+          textLines={lines}
+          fontUrls={fontUrls}
+          fontSizes={fontSizes}
+          strokeWidths={strokeWidths}
+          strokeColors={strokeColors}
+          fillColors={fillColors}
+          lineHeights={lineHeights}
+          lineDelays={lineDelays}
+          glowLineIndex={0}
+          goldLineIndex={2}
+          onComplete={() => {
+            console.log("🎉 All handwriting animation complete");
+            setIsFadingOut(true);
+            setTimeout(() => onEnd(), 1500);
+          }}
+        />
+      </SVGContainer>
+      {/* <ShadedText>Seok Ho & Yun A</ShadedText> */}
+      {/* 
+          Migrand.otf
+          DarhoutyFrederics.otf
+            HetigonVintage.otf
+            Mitchell.otf
+            Bedmiwoc.otf
+            WayCome.otf
+            KingRimba.ttf
+            밍기적체.ttf
+            콘콘체.ttf
+            밑미.ttf
+            르네상스.ttf
+            안창호체.woff2
+            고운돋음.woff2
+            경기바탕체.woff
+            */}
     </Wrapper>
   );
 };

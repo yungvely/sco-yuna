@@ -1,28 +1,23 @@
-// src/components/RSVP/RSVPForm.tsx
 "use client";
 
+import { CommonPopup } from "@/components/common/Popup";
 import { saveRSVP } from "@/lib/saveRSVP";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { CheckCircle } from "lucide-react";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import styled from "styled-components";
 import { z } from "zod";
 
+// 🔐 Zod validation schema
 const schema = z
   .object({
-    name: z.string().min(1, "이름을 입력해주세요"),
-    attending: z.enum(["yes", "no"], {
-      errorMap: () => ({ message: "참석 여부를 선택해주세요" }),
-    }),
-    side: z.enum(["groom", "bride"], {
-      errorMap: () => ({ message: "신랑/신부 측을 선택해주세요" }),
-    }),
+    name: z.string().min(1, "이름을 입력해주세요."),
+    phone: z.string().min(1, "연락처를 입력해주세요."),
+    attending: z.enum(["yes", "no"]),
+    side: z.enum(["groom", "bride"]),
     count: z.coerce.number().optional(),
     message: z.string().optional(),
-    agree: z.boolean().refine((val) => val === true, {
-      message: "개인정보 수집에 동의해주세요",
-    }),
   })
   .refine((data) => data.attending === "no" || (data.count && data.count > 0), {
     message: "인원 수는 1명 이상이어야 합니다",
@@ -31,36 +26,19 @@ const schema = z
 
 type FormData = z.infer<typeof schema>;
 
-const Wrapper = styled(motion.div)`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  background: #fff;
-  border-radius: 16px 16px 0 0;
-  padding: 24px;
-  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 998;
-`;
+type Props = {
+  isOpen: boolean;
+  onClose: () => void;
+};
 
-const Close = styled.button`
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  cursor: pointer;
-`;
+// ----------------- Styled Components -----------------
 
 const Field = styled.div`
   margin-bottom: 16px;
 `;
 
-const Label = styled.label`
-  display: block;
-  font-size: 1rem;
-  font-weight: 500;
+const Label = styled.div`
+  font-size: 0.95em;
   margin-bottom: 8px;
 `;
 
@@ -71,173 +49,194 @@ const Input = styled.input`
   border-radius: 8px;
 `;
 
+const Select = styled.select`
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  appearance: none;
+  font-size: 1rem;
+`;
+
 const TextArea = styled.textarea`
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  min-height: 80px;
 `;
 
-const Button = styled.button`
+const Error = styled.div`
+  margin-top: 8px;
+  color: #b56b43;
+  font-size: 0.8em;
+`;
+
+const SuccessPopup = styled.div`
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
   background: #000;
   color: #fff;
-  width: 100%;
-  padding: 12px;
-  border: none;
+  padding: 12px 24px;
   border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
 
-const SuccessPopup = styled(motion.div)`
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: white;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+const RadioGroup = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+const RadioButton = styled.label<{ checked?: boolean }>`
+  flex: 1;
   text-align: center;
-  font-size: 1.3rem;
-  font-weight: bold;
-  color: #ff6699;
-  z-index: 999;
+  font-size: 0.95rem;
+  padding: 10px 16px;
+  border: 1px solid #e6dfd9;
+  border-radius: 12px;
+  background: ${({ checked }) => (checked ? "#b5896a" : "#fff")};
+  color: ${({ checked }) => (checked ? "#fff" : "#b56b43")};
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+
+  input {
+    display: none;
+  }
 `;
 
-type Props = {
-  onClose: () => void;
-};
+// ----------------- Component -----------------
 
-const RSVPForm = ({ onClose }: Props) => {
-  const [submitted, setSubmitted] = useState(false);
+const RSVPForm = ({ isOpen, onClose }: Props) => {
   const {
     register,
     handleSubmit,
     control,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: "",
-      attending: undefined,
-      side: undefined,
-      message: "",
+      phone: "",
+      attending: "yes",
+      side: "groom",
       count: 1,
-      agree: false,
+      message: "",
     },
   });
 
   const attending = useWatch({ control, name: "attending" });
+  const [submitted, setSubmitted] = useState(false);
+  const [message, setMessage] = useState("전달되었습니다");
 
   const onSubmit = async (data: FormData) => {
     try {
       await saveRSVP(data);
       setSubmitted(true);
-    } catch (e) {
-      alert("저장에 실패했어요 😢");
+      setTimeout(() => {
+        setSubmitted(false);
+        onClose();
+      }, 2000);
+    } catch {
+      setMessage("저장에 실패했어요 😢");
     }
   };
 
-  useEffect(() => {
-    if (submitted) {
-      const timer = setTimeout(() => {
-        onClose();
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [submitted, onClose]);
-
   return (
     <>
-      <AnimatePresence>
-        <Wrapper
-          key="form"
-          initial={{ y: "100%", opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: "100%", opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <Close onClick={onClose}>&times;</Close>
+      <CommonPopup
+        isOpen={isOpen}
+        onClose={onClose}
+        onConfirm={handleSubmit(onSubmit)}
+        confirmText="참석 정보 전달하기"
+        cancelText="닫기"
+      >
+        <form>
+          <Field>
+            <Label>분류</Label>
+            <RadioGroup>
+              <RadioButton checked={watch("side") === "groom"}>
+                <input type="radio" value="groom" {...register("side")} />
+                신랑 한석호측
+              </RadioButton>
+              <RadioButton checked={watch("side") === "bride"}>
+                <input type="radio" value="bride" {...register("side")} />
+                신부 안윤아측
+              </RadioButton>
+            </RadioGroup>
+            {errors.side && <Error>{errors.side.message}</Error>}
+          </Field>
 
-          {!submitted && (
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Field>
-                <Label>참석 여부 *</Label>
-                <label>
-                  <input type="radio" value="yes" {...register("attending")} />{" "}
-                  참석
-                </label>
-                &nbsp;&nbsp;
-                <label>
-                  <input type="radio" value="no" {...register("attending")} />{" "}
-                  불참
-                </label>
-                {errors.attending && <div>{errors.attending.message}</div>}
-              </Field>
+          <Field>
+            <Label>참석</Label>
+            <RadioGroup>
+              <RadioButton checked={watch("attending") === "yes"}>
+                <input type="radio" value="yes" {...register("attending")} />
+                참석
+              </RadioButton>
+              <RadioButton checked={watch("attending") === "no"}>
+                <input type="radio" value="no" {...register("attending")} />
+                불참
+              </RadioButton>
+            </RadioGroup>
+            {errors.attending && <Error>{errors.attending.message}</Error>}
+          </Field>
 
-              <Field>
-                <Label>이름 *</Label>
-                <Input type="text" {...register("name")} />
-                {errors.name && <div>{errors.name.message}</div>}
-              </Field>
+          <Field>
+            <Label>성함 *</Label>
+            <Input
+              type="text"
+              placeholder="참석 대표자 성함을 입력해 주세요."
+              {...register("name")}
+            />
+            {errors.name && <Error>{errors.name.message}</Error>}
+          </Field>
 
-              <Field>
-                <Label>신랑/신부 측 *</Label>
-                <label>
-                  <input type="radio" value="groom" {...register("side")} />{" "}
-                  신랑 측
-                </label>
-                &nbsp;&nbsp;
-                <label>
-                  <input type="radio" value="bride" {...register("side")} />{" "}
-                  신부 측
-                </label>
-                {errors.side && <div>{errors.side.message}</div>}
-              </Field>
+          <Field>
+            <Label>연락처 *</Label>
+            <Input
+              type="text"
+              placeholder="참석 대표자 연락처를 입력해 주세요."
+              {...register("phone")}
+            />
+            {errors.phone && <Error>{errors.phone.message}</Error>}
+          </Field>
 
-              {attending === "yes" && (
-                <Field>
-                  <Label>인원 수 *</Label>
-                  <Input type="number" {...register("count")} />
-                  {errors.count && <div>{errors.count.message}</div>}
-                </Field>
-              )}
-
-              <Field>
-                <Label>축하 메시지 (선택)</Label>
-                <TextArea {...register("message")} />
-              </Field>
-
-              <Field>
-                <label>
-                  <input type="checkbox" {...register("agree")} /> 개인정보 수집
-                  동의 *
-                </label>
-                {errors.agree && <div>{errors.agree.message}</div>}
-              </Field>
-
-              <Button type="submit">제출하기</Button>
-            </form>
+          {attending === "yes" && (
+            <Field>
+              <Label>동행 인원 (본인 포험)</Label>
+              <Select {...register("count")}>
+                {[...Array(30)].map((_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1}명
+                  </option>
+                ))}
+              </Select>
+              {errors.count && <Error>{errors.count.message}</Error>}
+            </Field>
           )}
-        </Wrapper>
-      </AnimatePresence>
 
-      <AnimatePresence>
-        {submitted && (
-          <SuccessPopup
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            💌 참석 의사 감사합니다!
-            <br />
-            행복한 날을 함께해요 💐
-          </SuccessPopup>
-        )}
-      </AnimatePresence>
+          <Field>
+            <Label>전달사항</Label>
+            <TextArea
+              placeholder="남기실 메시지를 작성해 주세요."
+              {...register("message")}
+            />
+          </Field>
+        </form>
+      </CommonPopup>
+
+      {submitted && (
+        <SuccessPopup>
+          <CheckCircle size={18} /> {message}
+        </SuccessPopup>
+      )}
     </>
   );
 };

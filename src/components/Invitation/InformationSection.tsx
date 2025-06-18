@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
+import { Heading, Title } from "./styles";
 
 const Wrapper = styled.section`
   position: relative;
@@ -12,19 +13,8 @@ const Wrapper = styled.section`
   text-align: center;
 `;
 
-const Title = styled.h3`
-  color: #d17f45;
-  margin-bottom: 12px;
-  letter-spacing: 1px;
-`;
-
-const Heading = styled.h2`
-  font-size: 1.25rem;
-  margin-bottom: 24px;
-`;
-
 const Description = styled.p`
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   color: #333;
   line-height: 1.7;
   margin-top: 16px;

@@ -5,9 +5,11 @@ import RSVPForm from "@/components/RSVP/RSVPForm";
 import RSVPPopup from "@/components/RSVP/RSVPPopup";
 import { getAssetUrl } from "@/lib/getAssetUrl";
 import { useEffect, useRef, useState } from "react";
-import ArchHero from "./ArchHero";
+import styled from "styled-components";
 import { FontSizeControl } from "./common/FontSizeController";
-import { FlowerCanvas } from "./FlowerCanvas";
+import Typography from "./common/Typography";
+import ArchHero from "./Header/ArchHero";
+import { FlowerCanvas } from "./Header/FlowerCanvas";
 import AccountSection from "./Invitation/AccountSection";
 import CalendarSection from "./Invitation/CalendarSection";
 import { GallerySection } from "./Invitation/Gallery";
@@ -19,21 +21,27 @@ import RSVPSection from "./Invitation/RSVPSection";
 import ShareSection from "./Invitation/ShareSection";
 
 type Props = {
-  variant?: "yuna" | "sco";
+  variant: "yuna" | "sco" | null;
+  openingEnd: boolean;
 };
 
-const Invitation = ({ variant }: Props) => {
+const Copyright = styled.div`
+  margin-bottom: 20px;
+`;
+const Invitation = ({ variant, openingEnd }: Props) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  // const [showContact, setShowContact] = useState(false);
 
   const section1Ref = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
+    if (openingEnd) return setShowPopup(false);
     const hidden = localStorage.getItem("rsvp_hidden_date");
     const today = new Date().toISOString().split("T")[0];
     if (hidden !== today) {
       setShowPopup(true);
     }
-  }, []);
+  }, [openingEnd]);
 
   const handleSkipToday = () => {
     const today = new Date().toISOString().split("T")[0];
@@ -64,24 +72,34 @@ const Invitation = ({ variant }: Props) => {
           <GallerySection />
           <LocationSection />
           <InformationSection />
-          {/* <AccountSection /> */}
+          <AccountSection />
           <FontSizeControl />
         </>
       )}
       <BackgroundMusic />
       <RSVPSection onClick={() => setShowForm(true)} />
       <ShareSection variant={variant} />
+      <Copyright>
+        <Typography as="div" center size={0.75}>
+          Copyright © 2025 yungvely All right reserved.
+        </Typography>
+      </Copyright>
       {showPopup && (
         <RSVPPopup
+          isOpen={showPopup}
           onClose={() => setShowPopup(false)}
           onSubmit={() => {
             setShowPopup(false);
-            setShowForm(true);
+            setTimeout(() => {
+              setShowForm(true);
+            }, 250); // CommonPopup 애니메이션 300ms보다 살짝 여유
           }}
           onSkipToday={handleSkipToday}
         />
       )}
-      {showForm && <RSVPForm onClose={() => setShowForm(false)} />}
+      {showForm && (
+        <RSVPForm isOpen={showForm} onClose={() => setShowForm(false)} />
+      )}
     </>
   );
 };

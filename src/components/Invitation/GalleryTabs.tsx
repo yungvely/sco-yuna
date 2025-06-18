@@ -38,10 +38,10 @@ const TabRow = styled.div`
   flex-wrap: wrap;
 `;
 
-const Tab = styled.button<{ active: boolean }>`
+const Tab = styled.button<{ $active: boolean }>`
   padding: 8px 16px;
-  background: ${({ active }) => (active ? "#b37542" : "#fff")};
-  color: ${({ active }) => (active ? "#fff" : "#444")};
+  background: ${({ $active }) => ($active ? "#b37542" : "#fff")};
+  color: ${({ $active }) => ($active ? "#fff" : "#444")};
   border: none;
   border-radius: 20px;
   cursor: pointer;
@@ -167,7 +167,7 @@ export const GalleryTabs = () => {
         {tabNames.map((name, i) => (
           <Tab
             key={name}
-            active={i === activeTab}
+            $active={i === activeTab}
             onClick={() => {
               setActiveTab(i);
               swiperRef.current?.slideTo(i);

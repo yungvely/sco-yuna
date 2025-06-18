@@ -4,10 +4,10 @@ import { db } from "./firebase";
 
 type RSVPData = {
   name: string;
+  phone: string;
   attending: "yes" | "no";
   side: "groom" | "bride";
   message?: string;
-  agree: boolean;
   count?: number;
 };
 

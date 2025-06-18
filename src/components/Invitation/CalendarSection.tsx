@@ -41,7 +41,7 @@ const DateText = styled.h3`
 
 const SubText = styled.p`
   color: #999;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   margin-bottom: 8px;
 
   & + & {
@@ -58,11 +58,12 @@ const Calendar = styled.div`
   margin: 0 auto 24px;
 `;
 
-const Day = styled.div<{ active?: boolean; red?: boolean }>`
+const Day = styled.div<{ $active?: boolean; $red?: boolean }>`
   padding: 6px;
   border-radius: 50%;
-  background: ${({ active }) => (active ? "#5a371a" : "transparent")};
-  color: ${({ active, red }) => (active ? "#fff" : red ? "#d9534f" : "#333")};
+  background: ${({ $active }) => ($active ? "#b56b43" : "transparent")};
+  color: ${({ $active, $red }) =>
+    $active ? "#fff" : $red ? "#d9534f" : "#333"};
 `;
 
 const DdayWrap = styled.div`
@@ -164,7 +165,7 @@ const CalendarSection = () => {
         <SubText>Saturday, August 23, 2025 | PM 12:30</SubText>
         <Calendar>
           {["일", "월", "화", "수", "목", "금", "토"].map((day) => (
-            <Day key={day} red={day === "일"}>
+            <Day key={day} $red={day === "일"}>
               {day}
             </Day>
           ))}
@@ -174,7 +175,7 @@ const CalendarSection = () => {
             const isSunday = i % 7 === 0;
             const isFifteenth = date === 15;
             return (
-              <Day key={i} active={date === 23} red={isSunday || isFifteenth}>
+              <Day key={i} $active={date === 23} $red={isSunday || isFifteenth}>
                 {isVisible ? date : ""}
               </Day>
             );

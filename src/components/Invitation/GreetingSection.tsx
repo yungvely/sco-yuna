@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
-type GreetingVariant = "yuna" | "sco" | "modern";
+import ContactSection from "./ContactSection";
+import { Title } from "./styles";
 
+type GreetingVariant = "yuna" | "sco" | "modern";
 interface Props {
   variant?: GreetingVariant;
 }
@@ -16,18 +18,17 @@ const Wrapper = styled.section`
   text-align: center;
   color: #333;
   overflow: hidden;
-`;
-
-const Title = styled.h2`
-  font-size: 1.125rem;
-  letter-spacing: 1px;
-  margin-bottom: 16px;
-  color: #d17f45;
+  background: #fff;
 `;
 
 const MainText = styled.p`
   line-height: 1.8;
   white-space: pre-line;
+  background: #fff;
+  z-index: 2;
+  position: relative;
+  padding: 0 24px;
+  margin: 45px -24px 0;
 `;
 
 const BoldName = styled.span`
@@ -38,7 +39,7 @@ const BoldName = styled.span`
 
 const Names = styled.div`
   margin-top: 32px;
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   line-height: 1.8;
   color: #888;
 `;
@@ -48,30 +49,35 @@ const Center = styled.div`
 
   align-items: center;
   justify-content: center;
+  img {
+    margin: 0 2px;
+    opacity: 0.8;
+  }
 `;
 
 const BorderInvite = styled.div<{
-  position?: "top" | "bottom";
-  variant?: "yuna";
+  $position?: "top" | "bottom";
+  $variant?: "yuna";
 }>`
   width: calc(100% + 48px);
-  height: ${({ variant }) => (variant === "yuna" ? "100" : "220")}px;
+  height: ${({ $variant }) => ($variant === "yuna" ? "100" : "220")}px;
   background-color: transparent;
-  border-top-left-radius: ${({ variant }) =>
-      variant === "yuna" ? "10% " : "100% "}
+  border-top-left-radius: ${({ $variant }) =>
+      $variant === "yuna" ? "10% " : "100% "}
     100%;
   border-top-right-radius: 100% 100%;
   box-shadow: 1px -12px 17px 5px rgba(0, 0, 0, 0.05);
   position: relative;
   z-index: 1;
-  ${({ position, variant }) =>
-    position === "bottom"
+  pointer-events: none;
+  ${({ $position, $variant }) =>
+    $position === "bottom"
       ? `
   transform: rotate(180deg);
-  margin: ${variant === "yuna" ? "-25px -24px 0" : "-110px -24px 0"};
+  margin: ${$variant === "yuna" ? "-25px -24px 0" : "-120px -24px 0"};
   `
       : ` margin: ${
-          variant === "yuna" ? "0 -24px -30px" : "0 -24px -140px"
+          $variant === "yuna" ? "0 -24px -30px" : "0 -24px -140px"
         }; `};
   &::before {
     content: "";
@@ -104,9 +110,9 @@ const GreetingSection = ({ variant = "modern" }: Props) => {
       transition={{ duration: 0.8 }}
     >
       <Wrapper>
-        <BorderInvite variant={variant === "yuna" ? "yuna" : undefined} />
+        <BorderInvite $variant={variant === "yuna" ? "yuna" : undefined} />
         <Title>INVITATION</Title>
-        {variant === "modern" ? (
+        {/* {variant === "modern" ? (
           <MainText>
             소중한 분들을 초대합니다{"\n\n"}
             얼마나 고운 인연이기에 우리는 만났을까요{"\n\n"}
@@ -116,17 +122,16 @@ const GreetingSection = ({ variant = "modern" }: Props) => {
             꽃보다 아름답게 햇살보다 따뜻하게 살 수 있도록{"\n"}
             앞날을 축복해 주시면 감사하겠습니다.
           </MainText>
-        ) : (
-          <MainText>
-            푸른 하늘에 수 놓인 햇살이{"\n"}보<BoldName>석</BoldName>처럼
-            반짝이는 맑은 여름날{"\n"}
-            서로의 <BoldName>호</BoldName>흡과 발걸음이 맞닿은 하나 된 삶{"\n"}
-            <BoldName>윤</BoldName>슬과 같이 빛나는 축복 속에서{"\n"}
-            <BoldName>아</BoldName>름다운 여정을 시작하려 합니다{"\n\n"}
-            소중한 분들과 함께하고 싶습니다{"\n"}
-            귀한 발걸음 해주시면 감사하겠습니다.
-          </MainText>
-        )}
+        ) : ( )}*/}
+        <MainText>
+          푸른 하늘에 수 놓인 햇살이{"\n"}보<BoldName>석</BoldName>처럼 반짝이는
+          맑은 여름날{"\n"}
+          서로의 <BoldName>호</BoldName>흡과 발걸음이 맞닿은 하나 된 삶{"\n"}
+          <BoldName>윤</BoldName>슬과 같이 빛나는 축복 속에서{"\n"}
+          <BoldName>아</BoldName>름다운 여정을 시작하려 합니다{"\n\n"}
+          소중한 분들과 함께하고 싶습니다{"\n"}
+          귀한 발걸음 해주시면 감사하겠습니다.
+        </MainText>
         <Names>
           <Center>
             <Image src={imgPath} width={12} height={12} alt="국화" />
@@ -137,10 +142,11 @@ const GreetingSection = ({ variant = "modern" }: Props) => {
             <Image src={imgPath} width={12} height={12} alt="국화" />
             박경숙의 딸 안윤아
           </Center>
+          <ContactSection />
         </Names>
         <BorderInvite
-          position="bottom"
-          variant={variant === "yuna" ? "yuna" : undefined}
+          $position="bottom"
+          $variant={variant === "yuna" ? "yuna" : undefined}
         />
       </Wrapper>
     </motion.div>

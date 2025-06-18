@@ -4,23 +4,12 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
+import { Heading, Title } from "./styles";
 
 const Wrapper = styled.section`
   position: relative;
   padding: 60px 24px;
   text-align: center;
-`;
-
-const Title = styled.h3`
-  font-size: 16px;
-  color: #d17f45;
-  margin-bottom: 12px;
-  letter-spacing: 1px;
-`;
-
-const Heading = styled.h2`
-  font-size: 1.25rem;
-  margin-bottom: 16px;
 `;
 
 const Address = styled.p`
@@ -58,6 +47,8 @@ const NavButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  text-wrap-mode: nowrap;
 `;
 
 const Directions = styled.div`
@@ -129,6 +120,11 @@ const LocationSection = () => {
     null | "naver" | "tmap" | "kakao"
   >(null);
 
+  const lat = 37.50436945715146;
+  const lng = 127.04997438696505;
+
+  const place = "르비르모어";
+
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
@@ -136,10 +132,7 @@ const LocationSection = () => {
       typeof window.naver.maps !== "undefined" &&
       mapRef.current
     ) {
-      const location = new window.naver.maps.LatLng(
-        37.50436945715146,
-        127.04997438696505
-      );
+      const location = new window.naver.maps.LatLng(lat, lng);
       const map = new window.naver.maps.Map(mapRef.current, {
         center: location,
         zoom: 17,
@@ -159,33 +152,28 @@ const LocationSection = () => {
   const handleAppRedirect = () => {
     if (!modalVisible) return;
 
-    const lat = 37.50436945715146;
-    const lng = 127.04997438696505;
-    const place = "르비르모어 2F 클리타홀";
     const isMobile = /iPhone|Android/i.test(navigator.userAgent);
 
+    setModalVisible(null);
     if (!isMobile && modalVisible === "naver") {
-      window.open(
-        `https://map.naver.com/p/directions/-/${lng},${lat},${encodeURIComponent(
-          place
-        )},,/-/car`,
-        "_blank"
-      );
+      // PC에서 네이버는 공유 링크로 새 창
+      window.open("https://naver.me/5Eayl1vH", "_blank");
     } else {
+      if (modalVisible === "kakao") {
+        window.Kakao.Navi.share({
+          name: place,
+          x: 127.04984100682657,
+          y: 37.50445324085738,
+          coordType: "wgs84",
+        });
+        return;
+      }
       const schemes = {
-        naver: `nmap://place?name=${encodeURIComponent(
-          place
-        )}&lat=${lat}&lng=${lng}&appname=com.example.weddinginvite`,
-        tmap: `tmap://route?goalname=${encodeURIComponent(
-          place
-        )}&goalx=${lng}&goaly=${lat}`,
-        kakao: `kakaonavi://navigate?dest_lat=${lat}&dest_lng=${lng}&dest_name=${encodeURIComponent(
-          place
-        )}`,
+        naver: "https://naver.me/5Eayl1vH", // 모바일에서도 웹 URL로 열림
+        tmap: `tmap://search?name=${encodeURIComponent(place)}`,
       };
       window.location.href = schemes[modalVisible];
     }
-    setModalVisible(null);
   };
 
   return (
@@ -204,37 +192,35 @@ const LocationSection = () => {
 
         <MapContainer ref={mapRef} />
 
-        <NavLinks>
-          <NavButton onClick={() => setModalVisible("naver")}>
-            <MapIcon
-              src="https://ditto-phinf.pstatic.net/20250403_62/1743664218329EDdUx_PNG/67ee345a33d4b137e96c1b58.png"
-              alt=""
-            />
-            네이버지도
-          </NavButton>
-          <NavButton onClick={() => setModalVisible("tmap")}>
-            <MapIcon
-              size="12"
-              src="https://www.tmapmobility.com/favicon.ico"
-              alt=""
-            />
-            티맵
-          </NavButton>
-          <NavButton onClick={() => setModalVisible("kakao")}>
-            <MapIcon
-              size="18"
-              src="https://t1.kakaocdn.net/kakaomobility/company_website/contents/v2/12-icon-navi.svg"
-              alt=""
-            />
-            카카오내비
-          </NavButton>
-        </NavLinks>
-
         <Directions>
           <strong>내비게이션</strong>
           <br />
           원하는 앱을 선택하시면 길안내가 시작됩니다.
-          <br />
+          <NavLinks>
+            <NavButton onClick={() => setModalVisible("naver")}>
+              <MapIcon
+                src="https://ditto-phinf.pstatic.net/20250403_62/1743664218329EDdUx_PNG/67ee345a33d4b137e96c1b58.png"
+                alt=""
+              />
+              네이버지도
+            </NavButton>
+            <NavButton onClick={() => setModalVisible("tmap")}>
+              <MapIcon
+                size="12"
+                src="https://www.tmapmobility.com/favicon.ico"
+                alt=""
+              />
+              티맵
+            </NavButton>
+            <NavButton onClick={() => setModalVisible("kakao")}>
+              <MapIcon
+                size="18"
+                src="https://t1.kakaocdn.net/kakaomobility/company_website/contents/v2/12-icon-navi.svg"
+                alt=""
+              />
+              카카오내비
+            </NavButton>
+          </NavLinks>
           <br />
           <strong>지하철</strong>
           <br />
