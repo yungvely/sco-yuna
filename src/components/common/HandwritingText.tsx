@@ -230,8 +230,8 @@ export const HandwritingText = ({
       anime({
         targets: shadowElements,
         opacity: [0, 1],
-        duration: 1000,
-        delay: (lineDelays?.[0] ?? 0) + textLines[0].length * 120 + 200,
+        duration: 100,
+        delay: (lineDelays?.[0] ?? 0) + textLines[0].length * 60 + 200,
         easing: "easeOutQuad",
       });
 
@@ -239,7 +239,7 @@ export const HandwritingText = ({
         targets: pathElements,
         strokeDashoffset: [anime.setDashoffset, 0],
         easing: "easeInOutSine",
-        duration: 300,
+        duration: 100,
         delay: (_: unknown, i: number) => {
           let charCount = 0;
           let lineIndex = 0;
@@ -249,7 +249,7 @@ export const HandwritingText = ({
             charCount += len;
             lineIndex++;
           }
-          return (lineDelays[lineIndex] ?? 0) + i * 120;
+          return (lineDelays[lineIndex] ?? 0) + i * 60;
         },
       });
 
@@ -257,7 +257,7 @@ export const HandwritingText = ({
         targets: fillElements,
         fillOpacity: [0, 1],
         easing: "easeOutQuad",
-        duration: 200,
+        duration: 100,
         delay: (_: unknown, i: number) => {
           let charCount = 0;
           let lineIndex = 0;
@@ -267,7 +267,7 @@ export const HandwritingText = ({
             charCount += len;
             lineIndex++;
           }
-          return (lineDelays[lineIndex] ?? 0) + i * 120 + 80;
+          return (lineDelays[lineIndex] ?? 0) + i * 60 + 80;
         },
         complete: onComplete,
       });

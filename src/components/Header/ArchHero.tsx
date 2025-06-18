@@ -145,7 +145,7 @@ const ArchHero = forwardRef<HTMLDivElement, Props>(
               alt="배경 애니메이션"
               fill
               priority
-              unoptimized // 애니메이션이므로 최적화 끄기 (중요!)
+              unoptimized
             />
           </AnimatedImageWrapper>
           <CanvasWrapper>{children}</CanvasWrapper>

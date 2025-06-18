@@ -127,7 +127,7 @@ const Opening = ({
   const strokeWidths = [1, 1.5, 1.5, 1.3];
   const strokeColors = ["#fff", "#fff", "rgba(63, 81, 181,0.7)", "#f1e0a5"];
   const fillColors = ["#fff", "#fff", "#fdf8d0", "#3F51B5"];
-  const lineDelays = [80, 300, 50, 0];
+  const lineDelays = [80, 0, 0, 0];
   // const lineDelays = [100, 200, 300, 800];
 
   const lines = hasNickname
@@ -147,19 +147,6 @@ const Opening = ({
   return (
     <Wrapper $isFadingOut={isFadingOut}>
       <Heart />
-      {/* <StyledHeart>
-        <HeartSVG />
-      </StyledHeart> */}
-      {/* {nickname && (
-        <Typography font={5} size={1.8} color="#000">
-          only for {nickname}
-        </Typography>
-      )} */}
-      {/* 
-      Seok Ho & Yun A 
-      한석호 & 안윤아
-      */}
-
       <SVGContainer>
         <HandwritingText
           textLines={lines}
@@ -173,29 +160,12 @@ const Opening = ({
           glowLineIndex={0}
           goldLineIndex={2}
           onComplete={() => {
-            console.log("🎉 All handwriting animation complete");
             setIsFadingOut(true);
             setTimeout(() => onEnd(), 1500);
           }}
         />
       </SVGContainer>
       {/* <ShadedText>Seok Ho & Yun A</ShadedText> */}
-      {/* 
-          Migrand.otf
-          DarhoutyFrederics.otf
-            HetigonVintage.otf
-            Mitchell.otf
-            Bedmiwoc.otf
-            WayCome.otf
-            KingRimba.ttf
-            밍기적체.ttf
-            콘콘체.ttf
-            밑미.ttf
-            르네상스.ttf
-            안창호체.woff2
-            고운돋음.woff2
-            경기바탕체.woff
-            */}
     </Wrapper>
   );
 };
