@@ -97,7 +97,7 @@ const BorderInvite = styled.div<{
 const GreetingSection = ({ variant = "modern" }: Props) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
-    threshold: 0.2,
+    threshold: 0.1,
   });
 
   const imgPath = "/icons/ChrysanthemumIcon.svg";

@@ -4,8 +4,7 @@ import { useInView } from "react-intersection-observer";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import styled from "styled-components";
-import Lightbox from "yet-another-react-lightbox";
-import "yet-another-react-lightbox/styles.css";
+import { CustomLightbox } from "../common/CustomLightbox";
 import { Heading, Title } from "./styles";
 
 const Wrapper = styled.section`
@@ -137,22 +136,14 @@ export const GallerySection = ({ variant }: GallerySectionProps) => {
 
   useEffect(() => {
     if (selectedIndex !== null) {
-      // Lightbox 열릴 때 브라우저 히스토리에 dummy push
       window.history.pushState({ lightbox: true }, "");
 
-      const handlePopState = (e: PopStateEvent) => {
-        setSelectedIndex(null); // 뒤로가기 시 Lightbox 닫기
-      };
-
+      const handlePopState = () => setSelectedIndex(null);
       window.addEventListener("popstate", handlePopState);
 
       return () => {
         window.removeEventListener("popstate", handlePopState);
-
-        // Lightbox가 닫힐 때, 추가된 히스토리 스택 제거
-        if (window.history.state?.lightbox) {
-          window.history.back();
-        }
+        if (window.history.state?.lightbox) window.history.back();
       };
     }
   }, [selectedIndex]);
@@ -186,14 +177,12 @@ export const GallerySection = ({ variant }: GallerySectionProps) => {
       {!expanded && allImages && allImages.length > 9 && (
         <MoreButton onClick={handleExpand}>더보기</MoreButton>
       )}
-
       {allImages && (
-        <Lightbox
+        <CustomLightbox
           open={selectedIndex !== null}
-          close={() => setSelectedIndex(null)}
+          images={allImages}
           index={selectedIndex || 0}
-          slides={allImages.map((src) => ({ src }))}
-          animation={{ fade: 250 }}
+          onClose={() => setSelectedIndex(null)}
         />
       )}
     </Wrapper>

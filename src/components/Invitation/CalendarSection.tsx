@@ -4,33 +4,33 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
-
 const Wrapper = styled.section`
   position: relative;
   padding: 60px 24px;
   text-align: center;
 
   background: linear-gradient(to bottom, white 0%, #fffcee 100%);
-  border-bottom-right-radius: 15vw;
+  border-bottom-right-radius: 140px;
 
-  &:before {
+  &::before {
     content: "";
     background-color: #fffcee;
     position: absolute;
     top: 100%;
     left: 0;
-    width: 15vw;
-    height: 15vw;
+    width: 140px;
+    height: 140px;
   }
-  &:after {
+
+  &::after {
     content: "";
     background-color: #fff;
     position: absolute;
     top: 100%;
     left: 0;
-    width: 15vw;
-    height: 15vw;
-    border-top-left-radius: 15vw;
+    width: 140px;
+    height: 140px;
+    border-top-left-radius: 140px;
   }
 `;
 
@@ -59,11 +59,22 @@ const Calendar = styled.div`
 `;
 
 const Day = styled.div<{ $active?: boolean; $red?: boolean }>`
-  padding: 6px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-radius: 50%;
-  background: ${({ $active }) => ($active ? "#b56b43" : "transparent")};
+  font-size: 0.95rem;
+  line-height: 1;
+  font-weight: ${({ $active }) => ($active ? "bold" : "normal")};
+  background: ${({ $active }) =>
+    $active ? "linear-gradient(135deg, #c9a176, #b56b43)" : "transparent"};
   color: ${({ $active, $red }) =>
     $active ? "#fff" : $red ? "#d9534f" : "#333"};
+  box-shadow: ${({ $active }) =>
+    $active ? "0 2px 5px rgba(0,0,0,0.15)" : "none"};
+  transition: all 0.3s ease;
 `;
 
 const DdayWrap = styled.div`
@@ -73,43 +84,48 @@ const DdayWrap = styled.div`
 const Countdown = styled.div`
   display: flex;
   justify-content: center;
-  align-items: end;
+  align-items: baseline;
   gap: 8px;
   font-family: "Gowun Batang", serif;
+  margin-bottom: 8px;
 `;
 
 const Block = styled.div`
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
-
-const Label = styled.div`
-  font-size: 0.75rem;
-  color: #888;
-  margin-bottom: 4px;
+const Label = styled.span`
+  font-size: 0.65rem;
+  color: #b79b7b;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
 `;
 
 const Value = styled.span`
   font-size: 1.5rem;
-  padding: 4px 10px;
-  background: #fff;
-  border-radius: 4px;
+  font-weight: bold;
+  color: #5b4433;
+  line-height: 1;
 `;
 
-const Colon = styled.div`
+const Colon = styled.span`
   font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  line-height: 1;
+  align-self: flex-end;
   padding: 0 4px;
 `;
 
 const Subtitle = styled.p`
-  margin-top: 16px;
-  font-weight: bold;
-  color: #333;
+  color: #5b4433;
+  margin-top: 20px;
 `;
 
 const Days = styled.span`
-  color: #964b00;
+  color: #b56b43;
   font-weight: bold;
-  vertical-align: middle;
   margin: 0 4px;
 `;
 
@@ -120,6 +136,7 @@ const CalendarSection = () => {
     hours: 0,
     minutes: 0,
     seconds: 0,
+    expired: false,
   });
 
   const weddingDate = new Date("2025-08-23T12:30:00+09:00");
@@ -127,13 +144,16 @@ const CalendarSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
-      const diff = weddingDate.getTime() - now.getTime();
+      const diff = Math.max(weddingDate.getTime() - now.getTime(), 0);
+
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
 
-      setTimeLeft({ days, hours, minutes, seconds });
+      const expired = diff === 0;
+
+      setTimeLeft({ days, hours, minutes, seconds, expired });
     }, 1000);
 
     return () => clearInterval(interval);
@@ -182,32 +202,45 @@ const CalendarSection = () => {
           })}
         </Calendar>
         <DdayWrap>
-          <Countdown>
-            <Block>
-              <Label>Days</Label>
-              <Value>{timeLeft.days}</Value>
-            </Block>
-            <Colon>:</Colon>
-            <Block>
-              <Label>Hour</Label>
-              <Value>{timeLeft.hours}</Value>
-            </Block>
-            <Colon>:</Colon>
-            <Block>
-              <Label>Min</Label>
-              <Value>{timeLeft.minutes}</Value>
-            </Block>
-            <Colon>:</Colon>
-            <Block>
-              <Label>Sec</Label>
-              <Value>{timeLeft.seconds}</Value>
-            </Block>
-          </Countdown>
+          {isDday || !timeLeft.expired ? (
+            <>
+              {!timeLeft.expired && (
+                <Countdown>
+                  <Block>
+                    <Label>Days</Label>
+                    <Value>{timeLeft.days}</Value>
+                  </Block>
+                  <Colon>:</Colon>
+                  <Block>
+                    <Label>Hour</Label>
+                    <Value>{timeLeft.hours}</Value>
+                  </Block>
+                  <Colon>:</Colon>
+                  <Block>
+                    <Label>Min</Label>
+                    <Value>{timeLeft.minutes}</Value>
+                  </Block>
+                  <Colon>:</Colon>
+                  <Block>
+                    <Label>Sec</Label>
+                    <Value>{timeLeft.seconds}</Value>
+                  </Block>
+                </Countdown>
+              )}
 
-          <Subtitle>
-            석호, 윤아의 결혼식이<Days>{displayDay}</Days>
-            {typeof displayDay === "string" ? " 입니다." : "일 남았습니다."}
-          </Subtitle>
+              <Subtitle>
+                석호, 윤아의 결혼식이
+                <Days>{displayDay}</Days>
+                {typeof displayDay === "string" ? " 입니다." : "일 남았습니다."}
+              </Subtitle>
+            </>
+          ) : (
+            <Subtitle>
+              많은 축복 속에 결혼식을 무사히 마쳤습니다.
+              <br />
+              함께해 주신 모든 분들께 진심으로 감사드립니다.
+            </Subtitle>
+          )}
         </DdayWrap>
       </Wrapper>
     </motion.div>

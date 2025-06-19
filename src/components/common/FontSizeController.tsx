@@ -1,21 +1,30 @@
-// components/FontSizeControl.tsx
 "use client";
 
 import { useFontStore } from "@/store/fontStore";
+import { motion } from "framer-motion";
 import styled from "styled-components";
-import { FixedWrapper } from "../../styles/common";
+
+const MotionWrapper = styled(motion.div)`
+  position: fixed;
+  bottom: 16px;
+  right: 50%;
+  transform: translateX(calc(212.5px - 16px)); // (425 / 2 - 16px)
+  z-index: 998;
+
+  @media (max-width: 425px) {
+    left: auto;
+    right: 16px;
+    transform: none;
+  }
+`;
 
 const Controller = styled.div`
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
   display: flex;
   gap: 8px;
   background: #fff;
   border-radius: 24px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 8px 12px;
-  z-index: 998;
 `;
 
 const Button = styled.button`
@@ -31,13 +40,25 @@ const Button = styled.button`
   &:hover {
     background: #e5e5e5;
   }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
 `;
 
-export const FontSizeControl = () => {
+export const FontSizeControl = ({ visible = true }: { visible?: boolean }) => {
   const { scale, increase, decrease } = useFontStore();
 
   return (
-    <FixedWrapper position="bottom">
+    <MotionWrapper
+      initial={false}
+      animate={{ opacity: visible ? 1 : 0 }}
+      transition={{ duration: 0.4 }}
+      style={{
+        pointerEvents: visible ? "auto" : "none",
+      }}
+    >
       <Controller>
         <Button onClick={decrease} disabled={scale <= 1.0}>
           가-
@@ -46,6 +67,6 @@ export const FontSizeControl = () => {
           가+
         </Button>
       </Controller>
-    </FixedWrapper>
+    </MotionWrapper>
   );
 };

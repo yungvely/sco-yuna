@@ -12,30 +12,32 @@ type Props = {
   center?: boolean;
   as?: ElementType;
   style?: React.CSSProperties;
+  letterSpacing?: number;
 };
 
 const Typography = ({
   children,
-  font = 1,
+  font = 0,
   size = 1,
   color = "#333",
   lineHeight = 1.2,
   center = false,
   as = "span",
+  letterSpacing,
   style,
 }: Props) => {
-  const fontEntry = fontMap[font - 1];
+  const fontEntry = fontMap[font];
 
   const isClassFont = fontEntry?.type === "class";
-  const className = isClassFont ? fontEntry.value : "";
 
   return (
     <StyledText
       as={as}
-      className={className}
-      $font={fontEntry?.type === "family" ? fontEntry.value : ""}
+      className={isClassFont ? fontEntry.value : ""}
+      $font={isClassFont ? undefined : fontEntry.value}
       $size={size}
       $color={color}
+      $letterSpacing={letterSpacing}
       $lineHeight={lineHeight}
       $center={center}
       style={style}
@@ -53,10 +55,13 @@ const StyledText = styled.p<{
   $color: string;
   $lineHeight: number;
   $center: boolean;
+  $letterSpacing?: number;
 }>`
-  font-family: ${({ $font }) => $font}, sans-serif;
+  ${({ $font }) => ($font ? `font-family: ${$font}, sans-serif` : "")};
   font-size: ${({ $size }) => `${$size}em`};
   color: ${({ $color }) => $color};
   line-height: ${({ $lineHeight }) => $lineHeight};
   text-align: ${({ $center }) => ($center ? "center" : "left")};
+  ${({ $letterSpacing }) =>
+    $letterSpacing ? `letter-spacing: ${$letterSpacing}px` : ""};
 `;

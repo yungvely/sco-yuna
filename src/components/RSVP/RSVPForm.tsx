@@ -210,7 +210,7 @@ const RSVPForm = ({ isOpen, onClose }: Props) => {
 
           {attending === "yes" && (
             <Field>
-              <Label>동행 인원 (본인 포험)</Label>
+              <Label>동행 인원 (본인 포함)</Label>
               <Select {...register("count")}>
                 {[...Array(30)].map((_, i) => (
                   <option key={i + 1} value={i + 1}>

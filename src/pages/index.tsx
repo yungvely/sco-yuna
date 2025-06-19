@@ -1,7 +1,9 @@
 // src/pages/index.tsx
 "use client";
 
+import { FontSizeControl } from "@/components/common/FontSizeController";
 import Invitation from "@/components/Invitation";
+import BackgroundMusic from "@/components/Invitation/BackgroundMusic";
 import Opening from "@/components/Opening";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
@@ -50,22 +52,6 @@ export default function HomePage({ nickname, variant }: Props) {
     };
   }, []);
 
-  console.log(variant, "variant");
-
-  // useEffect(() => {
-  //   if (opening) {
-  //     document.body.style.overflow = "hidden";
-  //   } else {
-  //     document.body.style.overflow = "auto"; // 또는 'unset'
-  //   }
-
-  //   return () => {
-  //     document.body.style.overflow = "auto"; // 컴포넌트 언마운트 시 복원
-  //   };
-  // }, [opening]);
-
-  var yunaTitle = "25.8.23 석호 ❤️ 윤아 결혼합니다";
-  var scoTitle = "25.8.23 석호 ❤️ 윤아 결혼합니다";
   return (
     <>
       <Head>
@@ -99,9 +85,9 @@ export default function HomePage({ nickname, variant }: Props) {
       </Head>
 
       <Invitation variant={variant} openingEnd={opening} />
-      {opening && (
-        <Opening nickname={nickname} onEnd={() => setOpening(false)} />
-      )}
+      <Opening nickname={nickname} onEnd={() => setOpening(false)} />
+      {!opening && <BackgroundMusic />}
+      <FontSizeControl visible={!opening && variant !== "yuna"} />
     </>
   );
 }

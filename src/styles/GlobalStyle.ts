@@ -118,8 +118,12 @@ export const GlobalStyle = createGlobalStyle`
 
   * {
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
-
+  button, a {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none; 
+  }
   button {
     font-family: inherit;
     background: none;
@@ -127,27 +131,9 @@ export const GlobalStyle = createGlobalStyle`
     cursor: pointer;
   }
   
-  input, textarea {
+  input, textarea, select {
     font-size: 16px; /* iOS는 16px 미만이면 자동 확대 발생 가능 */
-  }
-
-  .yarl__portal_open {
-    z-index:99999;
-  }
-  .yarl__slide_image {
-    max-width: 425px !important;
-    margin: 0 auto;
-    display: block;
-  }
-
-  .yarl__container {
-    background-color: rgba(0, 0, 0, 0.8) !important;
-  }
-
-  .yarl__slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-family: inherit;
   }
 
 `;

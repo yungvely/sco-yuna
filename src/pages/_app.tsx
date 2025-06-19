@@ -15,9 +15,8 @@ const AppWrapper = styled.div`
   position: relative;
   overflow-x: scroll;
   line-height: 1.5;
-  * {
-    font-family: inherit;
-  }
+
+  font-family: ${BatangRegular.style.fontFamily}, sans-serif;
 `;
 export default function MyApp({ Component, pageProps }: AppProps) {
   const scale = useFontStore((s) => s.scale);

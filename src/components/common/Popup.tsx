@@ -96,8 +96,11 @@ export const CommonPopup = ({
 
     return () => {
       window.removeEventListener("popstate", handlePopState);
+
       if (window.history.state?.popup) {
-        window.history.back();
+        if (!isOpen) {
+          window.history.back();
+        }
       }
     };
   }, [isOpen, onClose]);
@@ -115,6 +118,9 @@ export const CommonPopup = ({
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 50, opacity: 0 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
+            onClick={(e: React.MouseEvent<HTMLDivElement>) =>
+              e.stopPropagation()
+            }
           >
             <Content>{children}</Content>
             <ButtonArea $single={!onConfirm}>

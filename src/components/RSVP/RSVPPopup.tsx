@@ -1,6 +1,8 @@
 "use client";
 
 import { CommonPopup } from "@/components/common/Popup";
+import { Badge, BadgeCheck } from "lucide-react";
+import { useState } from "react";
 import styled from "styled-components";
 
 type Props = {
@@ -22,20 +24,35 @@ const BottomButtons = styled.div`
   gap: 12px;
 `;
 
-const SkipButton = styled.button`
+const SkipButton = styled.button<{ checked: boolean }>`
   background: none;
-  color: #555;
+  color: ${({ checked }) => (checked ? "#b56b43" : "#555")};
   font-size: 0.9rem;
   border: none;
   cursor: pointer;
   text-decoration: underline;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  svg {
+    margin-right: 6px;
+  }
 `;
 
 const RSVPPopup = ({ isOpen, onClose, onSubmit, onSkipToday }: Props) => {
+  const [checked, setChecked] = useState(false);
+
+  const handleClose = () => {
+    if (checked) onSkipToday();
+    onClose();
+  };
+  const handleToggle = () => setChecked((prev) => !prev);
+
   return (
     <CommonPopup
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       onConfirm={onSubmit}
       confirmText="참석 의사 전달하기"
       cancelText="닫기"
@@ -58,7 +75,10 @@ const RSVPPopup = ({ isOpen, onClose, onSubmit, onSkipToday }: Props) => {
       <div style={{ textAlign: "center" }}>르비르모어 2F 클리타홀</div>
 
       <BottomButtons>
-        <SkipButton onClick={onSkipToday}>오늘 하루 보지 않기</SkipButton>
+        <SkipButton onClick={handleToggle} checked={checked}>
+          {checked ? <BadgeCheck size={18} /> : <Badge size={18} />}
+          오늘 하루 보지 않기
+        </SkipButton>
       </BottomButtons>
     </CommonPopup>
   );

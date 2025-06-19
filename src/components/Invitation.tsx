@@ -1,12 +1,9 @@
 "use client";
 
-import BackgroundMusic from "@/components/Invitation/BackgroundMusic";
 import RSVPForm from "@/components/RSVP/RSVPForm";
 import RSVPPopup from "@/components/RSVP/RSVPPopup";
-import { getAssetUrl } from "@/lib/getAssetUrl";
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import { FontSizeControl } from "./common/FontSizeController";
 import Typography from "./common/Typography";
 import ArchHero from "./Header/ArchHero";
 import { FlowerCanvas } from "./Header/FlowerCanvas";
@@ -31,9 +28,8 @@ const Copyright = styled.div`
 const Invitation = ({ variant, openingEnd }: Props) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  // const [showContact, setShowContact] = useState(false);
 
-  const section1Ref = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (openingEnd) return setShowPopup(false);
     const hidden = localStorage.getItem("rsvp_hidden_date");
@@ -52,20 +48,16 @@ const Invitation = ({ variant, openingEnd }: Props) => {
   return (
     <>
       {/* <FlowerCanvas
-        sectionRef={section1Ref}
+        sectionRef={sectionRef}
         //variant="blossom"
       /> */}
-      <ArchHero ref={section1Ref} imageSrc={getAssetUrl("first.gif")}>
-        <FlowerCanvas sectionRef={section1Ref} />
+      <ArchHero ref={sectionRef}>
+        <FlowerCanvas sectionRef={sectionRef} />
       </ArchHero>
 
       <GreetingSection variant={variant ? variant : "modern"} />
-      {variant ? (
-        variant === "yuna" ? (
-          <YunaVersion />
-        ) : (
-          <ScoVersion />
-        )
+      {variant === "yuna" ? (
+        <YunaVersion />
       ) : (
         <>
           <CalendarSection />
@@ -73,10 +65,8 @@ const Invitation = ({ variant, openingEnd }: Props) => {
           <LocationSection />
           <InformationSection />
           <AccountSection />
-          <FontSizeControl />
         </>
       )}
-      <BackgroundMusic />
       <RSVPSection onClick={() => setShowForm(true)} />
       <ShareSection variant={variant} />
       <Copyright>
@@ -90,9 +80,7 @@ const Invitation = ({ variant, openingEnd }: Props) => {
           onClose={() => setShowPopup(false)}
           onSubmit={() => {
             setShowPopup(false);
-            setTimeout(() => {
-              setShowForm(true);
-            }, 250); // CommonPopup 애니메이션 300ms보다 살짝 여유
+            setTimeout(() => setShowForm(true), 250);
           }}
           onSkipToday={handleSkipToday}
         />
@@ -109,15 +97,6 @@ const YunaVersion = () => (
     <CalendarSection />
     <GalleryTabs />
     <LocationSection />
-    <InformationSection />
-    <AccountSection />
-  </>
-);
-
-const ScoVersion = () => (
-  <>
-    <CalendarSection />
-    {/* <LocationSection /> */}
     <InformationSection />
     <AccountSection />
   </>

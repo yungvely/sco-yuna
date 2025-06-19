@@ -1,7 +1,6 @@
 // src/styles/fonts.ts
 import localFont from "next/font/local";
 
-// ✅ 1. 미리 로딩할 폰트 (localFont)
 export const BatangRegular = localFont({
   src: "./fonts/Batang_Regular.woff",
   weight: "400",

@@ -127,22 +127,16 @@ const Opening = ({
   const strokeWidths = [1, 1.5, 1.5, 1.3];
   const strokeColors = ["#fff", "#fff", "rgba(63, 81, 181,0.7)", "#f1e0a5"];
   const fillColors = ["#fff", "#fff", "#fdf8d0", "#3F51B5"];
-  const lineDelays = [80, 0, 0, 0];
-  // const lineDelays = [100, 200, 300, 800];
+  const lineDelays = [40, 0, 0, 0]; // [100, 200, 300, 800];
 
-  const lines = hasNickname
-    ? [
-        `Only for you, ${nickname}`,
-        "Seok Ho & Yun A",
-        "2025. 8. 23",
-        "Save the Date",
-      ]
-    : [
-        "우리의 결혼식에 초대합니다",
-        "Seok Ho & Yun A",
-        "2025. 8. 23",
-        "Save the Date",
-      ];
+  const lines = [
+    `${
+      hasNickname ? `Only for you, ${nickname}` : "우리의 결혼식에 초대합니다"
+    }`,
+    "Seok Ho & Yun A",
+    "2025. 8. 23",
+    "Save the Date",
+  ];
 
   return (
     <Wrapper $isFadingOut={isFadingOut}>
@@ -161,7 +155,7 @@ const Opening = ({
           goldLineIndex={2}
           onComplete={() => {
             setIsFadingOut(true);
-            setTimeout(() => onEnd(), 1500);
+            setTimeout(() => onEnd(), 700);
           }}
         />
       </SVGContainer>

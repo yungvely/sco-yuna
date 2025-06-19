@@ -43,23 +43,29 @@ const NavButton = styled.button`
   background: #fff;
   color: #333;
   cursor: pointer;
-
   display: flex;
-  justify-content: center;
   align-items: center;
-
-  text-wrap-mode: nowrap;
 `;
 
 const Directions = styled.div`
   margin-top: 32px;
   text-align: left;
   font-size: 0.875rem;
-  line-height: 1.8;
+  line-height: 1.75;
   color: #333;
   max-width: 360px;
   margin-left: auto;
   margin-right: auto;
+`;
+
+const SectionTitle = styled.div`
+  font-weight: bold;
+  font-size: 0.95rem;
+  margin: 24px 0 4px;
+`;
+
+const SubTitle = styled.div`
+  margin: 10px 0 4px;
 `;
 
 const Label = styled.span<{ color?: string }>`
@@ -69,6 +75,7 @@ const Label = styled.span<{ color?: string }>`
   border-radius: 50%;
   background-color: ${({ color }) => color || "#000"};
   margin-right: 6px;
+  vertical-align: middle;
 `;
 
 const ModalBackdrop = styled.div`
@@ -122,7 +129,6 @@ const LocationSection = () => {
 
   const lat = 37.50436945715146;
   const lng = 127.04997438696505;
-
   const place = "르비르모어";
 
   useEffect(() => {
@@ -142,21 +148,16 @@ const LocationSection = () => {
           position: window.naver.maps.Position.TOP_RIGHT,
         },
       });
-      new window.naver.maps.Marker({
-        position: location,
-        map,
-      });
+      new window.naver.maps.Marker({ position: location, map });
     }
   }, []);
 
   const handleAppRedirect = () => {
     if (!modalVisible) return;
-
     const isMobile = /iPhone|Android/i.test(navigator.userAgent);
-
     setModalVisible(null);
+
     if (!isMobile && modalVisible === "naver") {
-      // PC에서 네이버는 공유 링크로 새 창
       window.open("https://naver.me/5Eayl1vH", "_blank");
     } else {
       if (modalVisible === "kakao") {
@@ -169,7 +170,7 @@ const LocationSection = () => {
         return;
       }
       const schemes = {
-        naver: "https://naver.me/5Eayl1vH", // 모바일에서도 웹 URL로 열림
+        naver: "https://naver.me/5Eayl1vH",
         tmap: `tmap://search?name=${encodeURIComponent(place)}`,
       };
       window.location.href = schemes[modalVisible];
@@ -193,8 +194,7 @@ const LocationSection = () => {
         <MapContainer ref={mapRef} />
 
         <Directions>
-          <strong>내비게이션</strong>
-          <br />
+          <SectionTitle>내비게이션</SectionTitle>
           원하는 앱을 선택하시면 길안내가 시작됩니다.
           <NavLinks>
             <NavButton onClick={() => setModalVisible("naver")}>
@@ -221,33 +221,24 @@ const LocationSection = () => {
               카카오내비
             </NavButton>
           </NavLinks>
-          <br />
-          <strong>지하철</strong>
-          <br />
+          <SectionTitle>지하철</SectionTitle>
           <Label color="#3b9f37" /> 2호선 <Label color="#dba829" /> 수인분당선
-          선릉역 1번 출구 바로 앞
           <br />
-          <br />
-          <strong>버스</strong>
-          <br />
-          선릉역 하차
-          <br />
+          &ensp;· 선릉역 1번 출구 바로 앞<SectionTitle>버스</SectionTitle>
+          <SubTitle>선릉역 하차</SubTitle>
           <Label color="#3165a8" /> 간선 146, 333, 341, 360, 740
           <br />
           <Label color="#c82363" /> 광역 1100, 1700, 2000, 7007, 8001, 9303
-          <br />
-          진선여자중고등학교 하차
-          <br />
+          <SubTitle>진선여자중고등학교 하차</SubTitle>
           <Label color="#3165a8" /> 간선 472
           <br />
           <Label color="#3b9f37" /> 지선 3414, 3426, 4312
+          <SectionTitle>주차 안내</SectionTitle>
+          <SubTitle>입차 시</SubTitle>
+          &ensp;· 발렛파킹 (2시간 무료)
           <br />
-          <br />
-          <strong>주차 안내</strong>
-          <br />
-          입차 시 발렛파킹 (2시간 무료)
-          <br />
-          출차 시 1층 정문에서 키 받고 지하주차장 직접 출차
+          <SubTitle>출차 시</SubTitle>&ensp;· 1층 정문에서 키 받으시고
+          지하주차장 직접 출차
         </Directions>
 
         {modalVisible && (

@@ -135,13 +135,38 @@ const accounts = {
 };
 
 export default function AccountSection() {
-  const [selected, setSelected] = useState<"groom" | "bride">("bride");
+  const [selected, setSelected] = useState<"groom" | "bride">("groom");
   const [copied, setCopied] = useState(false);
 
+  const fallbackCopy = (text: string) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand("copy");
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.log("복사 실패 😢");
+    }
+    document.body.removeChild(textarea);
+  };
+
   const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text.replace(/-/g, ""));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (navigator.clipboard) {
+      navigator.clipboard
+        .writeText(text.replace(/-/g, ""))
+        .then(() => {
+          setCopied(true);
+          setTimeout(() => setCopied(false), 2000);
+        })
+        .catch(() => fallbackCopy(text.replace(/-/g, "")));
+    } else {
+      fallbackCopy(text.replace(/-/g, ""));
+    }
   };
 
   return (
@@ -172,8 +197,14 @@ export default function AccountSection() {
         {accounts[selected].map(({ name, bank, account, kakao }) => (
           <AccountRow key={name + account}>
             <AccountInfo>
-              <div>
-                <strong>{name}</strong> ({bank}) {account}
+              <div
+                style={{
+                  userSelect: "text",
+                  fontWeight: 500,
+                  display: "inline-block",
+                }}
+              >
+                <strong>{name}</strong> ({bank}) <span>{account}</span>
               </div>
               <Buttons>
                 <IconButton

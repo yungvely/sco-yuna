@@ -76,23 +76,17 @@ export const HandwritingText = ({
           <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="blur2" />
           <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur3" />
           <feFlood flood-color="#f1e0a5" flood-opacity="1" result="color" />
-
-        <feMerge result="mergedBlur">
-        <feMergeNode in="blur1" />
-        <feMergeNode in="blur2" />
-        <feMergeNode in="blur3" />
-      </feMerge>
-          // <feComposite in="color" in2="blurred" operator="in" result="coloredBlur" />
+          <feMerge result="mergedBlur">
+            <feMergeNode in="blur1" />
+            <feMergeNode in="blur2" />
+            <feMergeNode in="blur3" />
+          </feMerge>
+          <feComposite in="color" in2="blurred" operator="in" result="coloredBlur" />
           <feMerge>
             <feMergeNode in="coloredBlur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
-      
-
-
-
-  
       `;
       svg.appendChild(defs);
 
@@ -230,8 +224,8 @@ export const HandwritingText = ({
       anime({
         targets: shadowElements,
         opacity: [0, 1],
-        duration: 100,
-        delay: (lineDelays?.[0] ?? 0) + textLines[0].length * 60 + 200,
+        duration: 1000,
+        delay: (lineDelays?.[0] ?? 0) + textLines[0].length * 60 + 100,
         easing: "easeOutQuad",
       });
 

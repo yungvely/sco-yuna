@@ -2,9 +2,10 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import styled from "styled-components";
+import { getAssetUrl } from "../../lib/getAssetUrl";
 import Typography from "../common/Typography";
 import WaveEffect from "./WaveEffect";
 
@@ -33,6 +34,61 @@ const AnimatedImageWrapper = styled.div`
     height: 100%;
   }
 `;
+
+const CrossFadeWrapper = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 4px;
+`;
+
+const FadingImage = styled(Image)<{ $visible: boolean }>`
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 1.5s ease-in-out;
+  opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+`;
+
+const CrossFadeImages = ({ srcA, srcB }: { srcA: string; srcB: string }) => {
+  const [showA, setShowA] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowA((prev) => !prev);
+    }, 1500); // 3초마다 전환
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <CrossFadeWrapper>
+      <FadingImage
+        src={srcA}
+        alt="first"
+        fill
+        $visible={showA}
+        unoptimized
+        style={{
+          top: "-73px",
+          right: "15px",
+          zIndex: 1,
+          transform: "rotateZ(0.5deg)",
+        }}
+      />
+      <FadingImage
+        src={srcB}
+        alt="second"
+        fill
+        $visible={true}
+        unoptimized
+        style={{ top: "-80px", right: "10px" }}
+      />
+    </CrossFadeWrapper>
+  );
+};
 export const SvgDefs = () => (
   <svg
     viewBox="0 0 430 700"
@@ -96,7 +152,7 @@ const CanvasWrapper = styled.div`
 `;
 
 type Props = {
-  imageSrc: string;
+  imageSrc?: string;
   children?: React.ReactNode;
 };
 
@@ -134,19 +190,29 @@ const ArchHero = forwardRef<HTMLDivElement, Props>(
       >
         <Wrapper>
           <TopDate>
-            <Typography size={0.8}>THE WEDDING OF</Typography>
-            <Typography size={2} lineHeight={1.5}>
+            <Typography letterSpacing={1} size={0.7}>
+              THE WEDDING OF
+            </Typography>
+            <Typography size={2.2} lineHeight={1.7}>
               08.23
             </Typography>
           </TopDate>
           <AnimatedImageWrapper>
-            <Image
-              src={imageSrc}
-              alt="배경 애니메이션"
-              fill
-              priority
-              unoptimized
-            />
+            {imageSrc ? (
+              <Image
+                src={imageSrc}
+                alt="first picture"
+                fill
+                priority
+                unoptimized
+                style={{ top: "-80px" }}
+              />
+            ) : (
+              <CrossFadeImages
+                srcA={getAssetUrl("studio/studio_015.webp")}
+                srcB={getAssetUrl("studio/studio_016.webp")}
+              />
+            )}
           </AnimatedImageWrapper>
           <CanvasWrapper>{children}</CanvasWrapper>
           <SvgDefs />

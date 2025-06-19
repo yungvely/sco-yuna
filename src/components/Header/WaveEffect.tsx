@@ -9,6 +9,7 @@ const WaveContainer = styled.div<{ top?: boolean }>`
   transform: ${({ top }) => (top ? "rotate(180deg)" : "none")};
   overflow: hidden;
   bottom: 0;
+  left: 0;
   z-index: 1;
 
   svg {
