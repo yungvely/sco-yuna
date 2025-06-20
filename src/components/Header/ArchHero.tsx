@@ -37,10 +37,15 @@ const AnimatedImageWrapper = styled.div`
 
 const CrossFadeWrapper = styled.div`
   position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 4px;
+  width: 84%;
+  height: 94%;
+  top: 35px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  overflow: hidden;
+  border-top-left-radius: 200px;
+  border-top-right-radius: 200px;
 `;
 
 const FadingImage = styled(Image)<{ $visible: boolean }>`
@@ -49,17 +54,26 @@ const FadingImage = styled(Image)<{ $visible: boolean }>`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: opacity 1.5s ease-in-out;
+  transition: opacity 1.3s ease-in-out;
   opacity: ${({ $visible }) => ($visible ? 1 : 0)};
+  transform-origin: center center;
 `;
 
-const CrossFadeImages = ({ srcA, srcB }: { srcA: string; srcB: string }) => {
+const CrossFadeImages = ({
+  srcA,
+  srcB,
+  children,
+}: {
+  srcA: string;
+  srcB: string;
+  children?: React.ReactNode;
+}) => {
   const [showA, setShowA] = useState(true);
 
   useEffect(() => {
     const interval = setInterval(() => {
       setShowA((prev) => !prev);
-    }, 1500); // 3초마다 전환
+    }, 1800);
     return () => clearInterval(interval);
   }, []);
 
@@ -73,10 +87,10 @@ const CrossFadeImages = ({ srcA, srcB }: { srcA: string; srcB: string }) => {
         unoptimized
         priority
         style={{
-          top: "-73px",
-          right: "15px",
+          top: "-75px",
+          left: "14px",
           zIndex: 1,
-          transform: "rotateZ(0.5deg)",
+          transform: "rotateZ(0.6deg) scale(1.15)",
         }}
       />
       <FadingImage
@@ -86,62 +100,12 @@ const CrossFadeImages = ({ srcA, srcB }: { srcA: string; srcB: string }) => {
         $visible={true}
         unoptimized
         priority
-        style={{ top: "-80px", right: "10px" }}
+        style={{ top: "-79px", left: "13px", transform: "scale(1.15)" }}
       />
+      {children}
     </CrossFadeWrapper>
   );
 };
-export const SvgDefs = () => (
-  <svg
-    viewBox="0 0 430 700"
-    preserveAspectRatio="xMidYMid meet"
-    style={{ width: 0, height: 0, position: "absolute" }}
-  >
-    <defs>
-      <mask id="arch-hole-mask" maskUnits="userSpaceOnUse">
-        <g transform="translate(0, 0)">
-          <rect width="430" height="600" fill="white" />
-          <path
-            fill="black"
-            d="
-            M 50 190
-            A 200 200 0 0 1 380 190
-            L 380 600
-            L 50 600
-            Z
-            "
-          />
-        </g>
-      </mask>
-    </defs>
-  </svg>
-);
-
-export const ArchMaskOverlay = styled.div`
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  width: 430px;
-  height: 640px;
-  background: white;
-
-  mask: url(#arch-hole-mask);
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  mask-position: center bottom;
-
-  -webkit-mask: url(#arch-hole-mask);
-  -webkit-mask-repeat: no-repeat;
-  -webkit-mask-size: contain;
-  -webkit-mask-position: center bottom;
-
-  mask-composite: exclude;
-  -webkit-mask-composite: destination-out;
-
-  z-index: 10;
-  pointer-events: none;
-`;
 
 const CanvasWrapper = styled.div`
   position: absolute;
@@ -201,24 +165,26 @@ const ArchHero = forwardRef<HTMLDivElement, Props>(
           </TopDate>
           <AnimatedImageWrapper>
             {imageSrc ? (
-              <Image
-                src={imageSrc}
-                alt="first picture"
-                fill
-                priority
-                unoptimized
-                style={{ top: "-80px" }}
-              />
+              <>
+                <Image
+                  src={imageSrc}
+                  alt="first picture"
+                  fill
+                  priority
+                  unoptimized
+                  style={{ top: "-80px" }}
+                />
+                <CanvasWrapper>{children}</CanvasWrapper>
+              </>
             ) : (
               <CrossFadeImages
                 srcA={getAssetUrl("studio/studio_015.webp")}
                 srcB={getAssetUrl("studio/studio_016.webp")}
-              />
+              >
+                <CanvasWrapper>{children}</CanvasWrapper>
+              </CrossFadeImages>
             )}
           </AnimatedImageWrapper>
-          <CanvasWrapper>{children}</CanvasWrapper>
-          <SvgDefs />
-          <ArchMaskOverlay />
           <WaveEffect />
         </Wrapper>
 

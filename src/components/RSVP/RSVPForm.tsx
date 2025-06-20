@@ -150,7 +150,7 @@ const RSVPForm = ({ isOpen, onClose }: Props) => {
     try {
       const finalData = {
         ...data,
-        count: data.attending === "no" ? 0 : data.count, // 🔥 핵심: 불참이면 count를 0으로
+        count: data.attending === "no" ? 0 : data.count,
       };
 
       await saveRSVP(finalData);

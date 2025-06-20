@@ -139,5 +139,6 @@ export const GlobalStyle = createGlobalStyle`
     font-size: 16px; /* iOS는 16px 미만이면 자동 확대 발생 가능 */
     font-family: inherit;
   }
+  
 
 `;
