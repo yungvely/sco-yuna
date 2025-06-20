@@ -142,7 +142,7 @@ const GreetingSection = ({ variant = "modern" }: Props) => {
             <Image src={imgPath} width={12} height={12} alt="국화" />
             박경숙의 딸 안윤아
           </Center>
-          <ContactSection />
+          {variant !== "yuna" && <ContactSection />}
         </Names>
         <BorderInvite
           $position="bottom"

@@ -11,6 +11,7 @@ type CommonPopupProps = {
   confirmText?: string;
   cancelText?: string;
   children: React.ReactNode;
+  confirmDisabled?: boolean;
 };
 
 const Overlay = styled(motion.div)`
@@ -85,6 +86,7 @@ export const CommonPopup = ({
   confirmText = "확인",
   cancelText = "닫기",
   children,
+  confirmDisabled,
 }: CommonPopupProps) => {
   useEffect(() => {
     if (!isOpen) return;
@@ -127,7 +129,9 @@ export const CommonPopup = ({
               {onConfirm ? (
                 <>
                   <button onClick={onClose}>{cancelText}</button>
-                  <button onClick={onConfirm}>{confirmText}</button>
+                  <button onClick={onConfirm} disabled={confirmDisabled}>
+                    {confirmText}
+                  </button>
                 </>
               ) : (
                 <button onClick={onClose}>{cancelText}</button>

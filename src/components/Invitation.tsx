@@ -31,11 +31,12 @@ const Invitation = ({ variant, openingEnd }: Props) => {
 
   const sectionRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
+    if (!openingEnd) return;
     if (openingEnd) return setShowPopup(false);
     const hidden = localStorage.getItem("rsvp_hidden_date");
     const today = new Date().toISOString().split("T")[0];
     if (hidden !== today) {
-      setShowPopup(true);
+      setShowPopup((prev) => prev || true);
     }
   }, [openingEnd]);
 
@@ -44,6 +45,25 @@ const Invitation = ({ variant, openingEnd }: Props) => {
     localStorage.setItem("rsvp_hidden_date", today);
     setShowPopup(false);
   };
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+
+    // 공유가 아닌 직접 접근이라면 강제 리디렉션
+    if (url.pathname === "/yuna" && url.searchParams.get("via") !== "kakao") {
+      window.location.replace("/");
+      return;
+    }
+
+    // 공유로 들어온 경우엔 주소만 조용히 변경 (replaceState)
+    if (
+      url.pathname === "/yuna"
+      // && url.searchParams.get("via") === "kakao"
+    ) {
+      const newUrl = `${window.location.origin}/`; // or /?name=xx 유지 원하면 조정
+      window.history.replaceState(null, "", newUrl);
+    }
+  }, []);
 
   return (
     <>
@@ -56,18 +76,18 @@ const Invitation = ({ variant, openingEnd }: Props) => {
       </ArchHero>
 
       <GreetingSection variant={variant ? variant : "modern"} />
+      <CalendarSection />
       {variant === "yuna" ? (
         <YunaVersion />
       ) : (
         <>
-          <CalendarSection />
           <GallerySection />
           <LocationSection />
           <InformationSection />
-          <AccountSection />
         </>
       )}
       <RSVPSection onClick={() => setShowForm(true)} />
+      <AccountSection variant={variant} />
       <ShareSection variant={variant} />
       <Copyright>
         <Typography as="div" center size={0.75}>
@@ -94,11 +114,9 @@ const Invitation = ({ variant, openingEnd }: Props) => {
 
 const YunaVersion = () => (
   <>
-    <CalendarSection />
     <GalleryTabs />
-    <LocationSection />
     <InformationSection />
-    <AccountSection />
+    <LocationSection />
   </>
 );
 

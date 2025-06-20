@@ -19,7 +19,7 @@ const MotionWrapper = styled(motion.div)`
   }
 `;
 
-const ExpandableButton = styled.button<{ expanded: boolean }>`
+const ExpandableButton = styled.button<{ $expanded: boolean }>`
   all: unset;
   display: inline-flex;
   align-items: center;
@@ -29,14 +29,14 @@ const ExpandableButton = styled.button<{ expanded: boolean }>`
   cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
-  gap: ${({ expanded }) => (expanded ? "8px" : "0")};
+  gap: ${({ $expanded }) => ($expanded ? "8px" : "0")};
   padding: 8px;
   transform-origin: right;
   transition: all 0.4s linear;
   font-size: 14px;
 
-  ${({ expanded }) =>
-    expanded &&
+  ${({ $expanded }) =>
+    $expanded &&
     `
     padding-left: 16px;
     padding-right: 12px;
@@ -44,9 +44,9 @@ const ExpandableButton = styled.button<{ expanded: boolean }>`
 
   span {
     display: inline-block;
-    max-width: ${({ expanded }) => (expanded ? "200px" : "0")};
-    opacity: ${({ expanded }) => (expanded ? 1 : 0)};
-    transform: ${({ expanded }) => (expanded ? "scaleX(1)" : "scaleX(0)")};
+    max-width: ${({ $expanded }) => ($expanded ? "200px" : "0")};
+    opacity: ${({ $expanded }) => ($expanded ? 1 : 0)};
+    transform: ${({ $expanded }) => ($expanded ? "scaleX(1)" : "scaleX(0)")};
     font-weight: bold;
     transform-origin: left;
     transition: all 0.4s linear;
@@ -125,7 +125,7 @@ const BackgroundMusic = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
         >
-          <ExpandableButton onClick={togglePlay} expanded={expanded}>
+          <ExpandableButton onClick={togglePlay} $expanded={expanded}>
             <span>배경음악이 준비되어 있습니다.</span>
             {playing ? <Volume2 size={20} /> : <VolumeX size={20} />}
           </ExpandableButton>

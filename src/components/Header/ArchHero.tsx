@@ -71,6 +71,7 @@ const CrossFadeImages = ({ srcA, srcB }: { srcA: string; srcB: string }) => {
         fill
         $visible={showA}
         unoptimized
+        priority
         style={{
           top: "-73px",
           right: "15px",
@@ -84,6 +85,7 @@ const CrossFadeImages = ({ srcA, srcB }: { srcA: string; srcB: string }) => {
         fill
         $visible={true}
         unoptimized
+        priority
         style={{ top: "-80px", right: "10px" }}
       />
     </CrossFadeWrapper>

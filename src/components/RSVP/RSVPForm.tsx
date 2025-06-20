@@ -4,7 +4,7 @@ import { CommonPopup } from "@/components/common/Popup";
 import { saveRSVP } from "@/lib/saveRSVP";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import styled from "styled-components";
 import { z } from "zod";
@@ -16,7 +16,10 @@ const schema = z
     phone: z.string().min(1, "연락처를 입력해주세요."),
     attending: z.enum(["yes", "no"]),
     side: z.enum(["groom", "bride"]),
-    count: z.coerce.number().optional(),
+    count: z.preprocess((val): number | undefined => {
+      if (val === "" || val == null) return undefined;
+      return Number(val);
+    }, z.number().optional()),
     message: z.string().optional(),
   })
   .refine((data) => data.attending === "no" || (data.count && data.count > 0), {
@@ -118,33 +121,53 @@ const RSVPForm = ({ isOpen, onClose }: Props) => {
     handleSubmit,
     control,
     watch,
-    formState: { errors },
-  } = useForm<FormData>({
+    reset,
+    setValue,
+    formState: { errors, isSubmitting, isSubmitSuccessful },
+  } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
       name: "",
       phone: "",
       attending: "yes",
       side: "groom",
-      count: 1,
       message: "",
     },
   });
 
   const attending = useWatch({ control, name: "attending" });
-  const [submitted, setSubmitted] = useState(false);
   const [message, setMessage] = useState("전달되었습니다");
+
+  useEffect(() => {
+    if (attending === "yes") {
+      setValue("count", 1, { shouldValidate: true });
+    } else {
+      setValue("count", undefined, { shouldValidate: true });
+    }
+  }, [attending, setValue]);
 
   const onSubmit = async (data: FormData) => {
     try {
-      await saveRSVP(data);
-      setSubmitted(true);
+      const finalData = {
+        ...data,
+        count: data.attending === "no" ? 0 : data.count, // 🔥 핵심: 불참이면 count를 0으로
+      };
+
+      await saveRSVP(finalData);
       setTimeout(() => {
-        setSubmitted(false);
         onClose();
+        reset({
+          name: "",
+          phone: "",
+          attending: "yes",
+          side: "groom",
+          count: 1,
+          message: "",
+        });
       }, 2000);
     } catch {
-      setMessage("저장에 실패했어요 😢");
+      setMessage("전달에 실패했어요 😢");
+      console.log(data, "errors");
     }
   };
 
@@ -153,11 +176,15 @@ const RSVPForm = ({ isOpen, onClose }: Props) => {
       <CommonPopup
         isOpen={isOpen}
         onClose={onClose}
-        onConfirm={handleSubmit(onSubmit)}
+        onConfirm={() => {
+          const form = document.getElementById("rsvp-form") as HTMLFormElement;
+          form?.requestSubmit();
+        }}
         confirmText="참석 정보 전달하기"
         cancelText="닫기"
+        confirmDisabled={isSubmitting}
       >
-        <form>
+        <form id="rsvp-form" onSubmit={handleSubmit(onSubmit)}>
           <Field>
             <Label>분류</Label>
             <RadioGroup>
@@ -207,11 +234,11 @@ const RSVPForm = ({ isOpen, onClose }: Props) => {
             />
             {errors.phone && <Error>{errors.phone.message}</Error>}
           </Field>
-
           {attending === "yes" && (
             <Field>
               <Label>동행 인원 (본인 포함)</Label>
-              <Select {...register("count")}>
+              <Select {...register("count", { valueAsNumber: true })}>
+                <option value="">선택해주세요</option>
                 {[...Array(30)].map((_, i) => (
                   <option key={i + 1} value={i + 1}>
                     {i + 1}명
@@ -232,7 +259,7 @@ const RSVPForm = ({ isOpen, onClose }: Props) => {
         </form>
       </CommonPopup>
 
-      {submitted && (
+      {isSubmitSuccessful && (
         <SuccessPopup>
           <CheckCircle size={18} /> {message}
         </SuccessPopup>

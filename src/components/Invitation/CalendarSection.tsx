@@ -144,14 +144,14 @@ const CalendarSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
-      const diff = Math.max(weddingDate.getTime() - now.getTime(), 0);
 
+      const diff = Math.max(weddingDate.getTime() - now.getTime(), 0);
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
       const minutes = Math.floor((diff / (1000 * 60)) % 60);
       const seconds = Math.floor((diff / 1000) % 60);
 
-      const expired = diff === 0;
+      const expired = now >= weddingDate; // ✅ 수정: 12:30 이후 true
 
       setTimeLeft({ days, hours, minutes, seconds, expired });
     }, 1000);
@@ -159,11 +159,11 @@ const CalendarSection = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const today = new Date();
-  const isDday =
-    today.getFullYear() === weddingDate.getFullYear() &&
-    today.getMonth() === weddingDate.getMonth() &&
-    today.getDate() === weddingDate.getDate();
+  const now = new Date();
+
+  const weddingDayStart = new Date("2025-08-23T00:00:00+09:00");
+  const weddingDayEnd = new Date("2025-08-24T00:00:00+09:00");
+  const isDday = now >= weddingDayStart && now < weddingDayEnd;
 
   const displayDay = isDday
     ? "D-DAY❤️"

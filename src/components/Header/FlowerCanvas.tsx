@@ -18,8 +18,12 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas || !sectionRef.current) return;
+
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!ctx) {
+      console.warn("Canvas 2D context를 불러오지 못했습니다.");
+      return;
+    }
 
     const dpr = window.devicePixelRatio || 1;
 
@@ -39,11 +43,6 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
 
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
-
-    const petalImage = new Image();
-    petalImage.crossOrigin = "anonymous";
-    petalImage.src = variant === "blossom" ? "/blossom.png" : "/petal.png";
-    petalImgRef.current = petalImage;
 
     const TOTAL = 100;
 
@@ -115,7 +114,15 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
           ctx.save();
           ctx.translate(p.x, p.y + scrollOffset);
           ctx.rotate((p.angle * Math.PI) / 180);
-          ctx.drawImage(petalImage, -p.size / 2, -p.size / 2, p.size, p.size);
+          if (petalImgRef.current) {
+            ctx.drawImage(
+              petalImgRef.current,
+              -p.size / 2,
+              -p.size / 2,
+              p.size,
+              p.size
+            );
+          }
           ctx.restore();
         });
       }
@@ -135,14 +142,17 @@ export const FlowerCanvas = ({ sectionRef, variant = "white" }: Props) => {
           angle: Math.random() * 360,
         }));
       }
-      draw();
     };
 
-    if (petalImage.complete) {
+    const petalImage = new Image();
+    petalImage.crossOrigin = "anonymous";
+    petalImage.src = variant === "blossom" ? "/blossom.png" : "/petal.png";
+    petalImgRef.current = petalImage;
+
+    petalImage.onload = () => {
       setup();
-    } else {
-      petalImage.onload = setup;
-    }
+      draw();
+    };
 
     const observer = new IntersectionObserver(
       ([entry]) => {

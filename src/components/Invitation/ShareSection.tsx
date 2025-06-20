@@ -57,7 +57,7 @@ type Props = {
 };
 
 const ShareSection = ({ variant }: Props) => {
-  const resURL = `https://sco-yuna.kr/${variant ?? ""}`;
+  const resURL = "https://sco-yuna.kr";
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -73,32 +73,7 @@ const ShareSection = ({ variant }: Props) => {
   const handleKakaoShare = () => {
     if (!window.Kakao?.isInitialized()) return;
 
-    // window.Kakao.Share.sendDefault({
-    //   objectType: "feed",
-    //   content: {
-    //     title: "25.8.23 석호 ❤️ 윤아 결혼합니다",
-    //     description:
-    //       "기쁜 날, 가까이서 축복해 주시면 더없는 기쁨으로 간직하겠습니다.",
-    //     imageUrl: `https://assets.sco-yuna.kr/og/${variant ?? "default"}.webp`,
-    //     link: {
-    //       mobileWebUrl: resURL,
-    //       webUrl: resURL,
-    //     },
-    //   },
-    //   buttons: [
-    //     {
-    //       title: "모바일 청첩장 보기",
-    //       link: {
-    //         mobileWebUrl: resURL,
-    //         webUrl: resURL,
-    //       },
-    //     },
-    //   ],
-    // });
-
-    window.Kakao.Share.sendCustom({
-      templateId: variant === "yuna" ? "" : 121566,
-    });
+    window.Kakao.Share.sendCustom({ templateId: 121566 });
   };
 
   const handleCopy = () => {
@@ -110,12 +85,13 @@ const ShareSection = ({ variant }: Props) => {
   return (
     <Wrapper>
       <Title>SHARE</Title>
-      {/* <Heading>함께하고 싶은 사람에게</Heading> */}
       <ButtonGroup>
         <ShareButton onClick={handleKakaoShare}>
           카카오톡으로 공유하기
         </ShareButton>
-        <ShareButton onClick={handleCopy}>링크 공유하기</ShareButton>
+        {variant !== "yuna" && (
+          <ShareButton onClick={handleCopy}>링크 공유하기</ShareButton>
+        )}
       </ButtonGroup>
 
       {copied && (

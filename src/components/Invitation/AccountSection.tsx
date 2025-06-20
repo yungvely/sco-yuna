@@ -4,6 +4,11 @@ import { CheckCircle, Copy } from "lucide-react";
 import { useState } from "react";
 import styled from "styled-components";
 import { Heading, Title } from "./styles";
+
+type Props = {
+  variant: "yuna" | "sco" | null;
+};
+
 const Wrapper = styled.section`
   position: relative;
   padding: 60px 24px;
@@ -98,6 +103,7 @@ const IconButton = styled.button`
     height: 20px;
   }
 `;
+
 const CopyPopup = styled.div`
   position: fixed;
   bottom: 24px;
@@ -134,7 +140,7 @@ const accounts = {
   ],
 };
 
-export default function AccountSection() {
+const AccountSection = ({ variant }: Props) => {
   const [selected, setSelected] = useState<"groom" | "bride">("groom");
   const [copied, setCopied] = useState(false);
 
@@ -169,6 +175,39 @@ export default function AccountSection() {
     }
   };
 
+  const renderAccountRow = ({
+    name,
+    bank,
+    account,
+    kakao,
+  }: (typeof accounts.bride)[number]) => (
+    <AccountRow key={name + account}>
+      <AccountInfo>
+        <div style={{ userSelect: "text", fontWeight: 500 }}>
+          <strong>{name}</strong> ({bank}) <span>{account}</span>
+        </div>
+        <Buttons>
+          <IconButton onClick={() => handleCopy(account)} aria-label="복사">
+            <Copy />
+          </IconButton>
+          {kakao && (
+            <IconButton
+              as="a"
+              href={kakao}
+              target="_blank"
+              aria-label="카카오페이"
+            >
+              <img
+                src="https://logo-resources.thevc.kr/organizations/200x200/2d194b70040d62c6a6452eaba311a3a919dcaca165e6abdae66586f8ca1690ba_1614220511509955.jpg"
+                alt="카카오페이"
+              />
+            </IconButton>
+          )}
+        </Buttons>
+      </AccountInfo>
+    </AccountRow>
+  );
+
   return (
     <Wrapper>
       <Title>ACCOUNT</Title>
@@ -178,59 +217,29 @@ export default function AccountSection() {
         너그러운 마음으로 양해 부탁드립니다.
       </Description>
 
-      <Tabs>
-        <TabButton
-          $active={selected === "groom"}
-          onClick={() => setSelected("groom")}
-        >
-          신랑측
-        </TabButton>
-        <TabButton
-          $active={selected === "bride"}
-          onClick={() => setSelected("bride")}
-        >
-          신부측
-        </TabButton>
-      </Tabs>
-
-      <AccountCard>
-        {accounts[selected].map(({ name, bank, account, kakao }) => (
-          <AccountRow key={name + account}>
-            <AccountInfo>
-              <div
-                style={{
-                  userSelect: "text",
-                  fontWeight: 500,
-                  display: "inline-block",
-                }}
-              >
-                <strong>{name}</strong> ({bank}) <span>{account}</span>
-              </div>
-              <Buttons>
-                <IconButton
-                  onClick={() => handleCopy(account)}
-                  aria-label="계좌번호 복사"
-                >
-                  <Copy />
-                </IconButton>
-                {kakao && (
-                  <IconButton
-                    as="a"
-                    href={kakao}
-                    target="_blank"
-                    aria-label="카카오페이 송금"
-                  >
-                    <img
-                      src="https://logo-resources.thevc.kr/organizations/200x200/2d194b70040d62c6a6452eaba311a3a919dcaca165e6abdae66586f8ca1690ba_1614220511509955.jpg"
-                      alt="카카오페이"
-                    />
-                  </IconButton>
-                )}
-              </Buttons>
-            </AccountInfo>
-          </AccountRow>
-        ))}
-      </AccountCard>
+      {variant === "yuna" ? (
+        <AccountCard>
+          {renderAccountRow(accounts.bride.find((a) => a.name === "안윤아")!)}
+        </AccountCard>
+      ) : (
+        <>
+          <Tabs>
+            <TabButton
+              $active={selected === "groom"}
+              onClick={() => setSelected("groom")}
+            >
+              신랑측
+            </TabButton>
+            <TabButton
+              $active={selected === "bride"}
+              onClick={() => setSelected("bride")}
+            >
+              신부측
+            </TabButton>
+          </Tabs>
+          <AccountCard>{accounts[selected].map(renderAccountRow)}</AccountCard>
+        </>
+      )}
 
       {copied && (
         <CopyPopup>
@@ -239,4 +248,6 @@ export default function AccountSection() {
       )}
     </Wrapper>
   );
-}
+};
+
+export default AccountSection;

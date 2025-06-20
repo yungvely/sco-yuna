@@ -114,6 +114,8 @@ export const GlobalStyle = createGlobalStyle`
 
     overscroll-behavior: none; /* ← 스크롤 튐 방지 */
     -webkit-overflow-scrolling: touch; /* ← 부드러운 터치 스크롤 */
+
+    -webkit-text-size-adjust: none;
   }
 
   * {
@@ -129,6 +131,8 @@ export const GlobalStyle = createGlobalStyle`
     background: none;
     border: none;
     cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
   }
   
   input, textarea, select {

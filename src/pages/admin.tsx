@@ -16,13 +16,14 @@ import {
   YAxis,
 } from "recharts";
 import styled from "styled-components";
+import KakaoSenderSection from "../components/Admin/KakaoSenderSection";
 
 const COLORS = ["#00C49F", "#FF8042"];
 
 const TabContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 1rem;
+  margin: 1rem 0;
 `;
 
 const Tab = styled.button<{ active: boolean }>`
@@ -34,6 +35,12 @@ const Tab = styled.button<{ active: boolean }>`
   font-weight: ${({ active }) => (active ? "bold" : "normal")};
   cursor: pointer;
   color: ${({ active }) => (active ? "#111" : "#aaa")};
+`;
+
+const Panel = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
 `;
 
 const Table = styled.table`
@@ -55,9 +62,15 @@ const Td = styled.td`
 
 const PasswordWrapper = styled.div`
   display: flex;
+  height: 100vh;
   flex-direction: column;
   align-items: center;
   margin-top: 4rem;
+`;
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100vh; // 전체 화면 높이
 `;
 
 const Summary = styled.div`
@@ -91,6 +104,7 @@ const AdminPage = () => {
   const [allData, setAllData] = useState<any[]>([]);
   const [logData, setLogData] = useState<any[]>([]);
   const [filtered, setFiltered] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<"RSVP" | "CDN" | "Kakao">("RSVP");
   const [side, setSide] = useState<"groom" | "bride">("groom");
   const [password, setPassword] = useState("");
   const [authorized, setAuthorized] = useState(false);
@@ -183,129 +197,164 @@ const AdminPage = () => {
   }
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h1>RSVP 관리자 통계</h1>
+    <Wrapper>
+      <h1>관리자 대시보드</h1>
 
       <TabContainer>
-        <Tab active={side === "groom"} onClick={() => setSide("groom")}>
-          신랑측
-        </Tab>
-        <Tab active={side === "bride"} onClick={() => setSide("bride")}>
-          신부측
-        </Tab>
+        {["RSVP", "CDN", "Kakao"].map((tab) => (
+          <Tab
+            key={tab}
+            active={activeTab === tab}
+            onClick={() => setActiveTab(tab as any)}
+          >
+            {tab}
+          </Tab>
+        ))}
       </TabContainer>
 
-      <Summary>총 참석 인원: {totalAttendees}명</Summary>
+      {activeTab === "RSVP" && (
+        <Panel>
+          <h2>📊 RSVP 참석자 통계</h2>
 
-      <TabContainer>
-        <Tab active={chartType === "pie"} onClick={() => setChartType("pie")}>
-          파이 차트
-        </Tab>
-        <Tab active={chartType === "bar"} onClick={() => setChartType("bar")}>
-          바 차트
-        </Tab>
-      </TabContainer>
+          <TabContainer>
+            <Tab active={side === "groom"} onClick={() => setSide("groom")}>
+              신랑측
+            </Tab>
+            <Tab active={side === "bride"} onClick={() => setSide("bride")}>
+              신부측
+            </Tab>
+          </TabContainer>
 
-      <ResponsiveContainer width="100%" height={300}>
-        {chartType === "pie" ? (
-          <PieChart>
-            <Pie
-              data={pieData}
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              fill="#8884d8"
-              dataKey="value"
-              label
+          <Summary>총 참석 인원: {totalAttendees}명</Summary>
+
+          <TabContainer>
+            <Tab
+              active={chartType === "pie"}
+              onClick={() => setChartType("pie")}
             >
-              {pieData.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        ) : (
-          <BarChart data={pieData} layout="vertical">
-            <XAxis type="number" />
-            <YAxis type="category" dataKey="name" />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="value" fill="#8884d8">
-              {pieData.map((entry, index) => (
-                <Cell
-                  key={`bar-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Bar>
-          </BarChart>
-        )}
-      </ResponsiveContainer>
+              파이 차트
+            </Tab>
+            <Tab
+              active={chartType === "bar"}
+              onClick={() => setChartType("bar")}
+            >
+              바 차트
+            </Tab>
+          </TabContainer>
 
-      <Accordion>
-        <AccordionHeader onClick={() => setShowHistory(!showHistory)}>
-          📋 제출 히스토리 {showHistory ? "▲" : "▼"}
-        </AccordionHeader>
-        {showHistory && (
-          <AccordionContent>
-            <Table>
-              <thead>
-                <tr>
-                  <Th>이름</Th>
-                  <Th>참석 여부</Th>
-                  <Th>인원</Th>
-                  <Th>메시지</Th>
-                  <Th>제출 시간</Th>
+          <ResponsiveContainer width="100%" height={300}>
+            {chartType === "pie" ? (
+              <PieChart>
+                <Pie
+                  data={pieData}
+                  cx="50%"
+                  cy="50%"
+                  outerRadius={100}
+                  fill="#8884d8"
+                  dataKey="value"
+                  label
+                >
+                  {pieData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Pie>
+                <Tooltip />
+                <Legend />
+              </PieChart>
+            ) : (
+              <BarChart data={pieData} layout="vertical">
+                <XAxis type="number" />
+                <YAxis type="category" dataKey="name" />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="value" fill="#8884d8">
+                  {pieData.map((entry, index) => (
+                    <Cell
+                      key={`bar-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            )}
+          </ResponsiveContainer>
+          <Accordion>
+            <AccordionHeader onClick={() => setShowHistory(!showHistory)}>
+              📋 제출 히스토리 {showHistory ? "▲" : "▼"}
+            </AccordionHeader>
+            {showHistory && (
+              <AccordionContent>
+                <Table>
+                  <thead>
+                    <tr>
+                      <Th>이름</Th>
+                      <Th>참석 여부</Th>
+                      <Th>인원</Th>
+                      <Th>메시지</Th>
+                      <Th>제출 시간</Th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {history.map((r, i) => (
+                      <tr key={i}>
+                        <Td>{r.name}</Td>
+                        <Td>{r.attending === "yes" ? "참석" : "불참"}</Td>
+                        <Td>{r.count || 1}</Td>
+                        <Td>{r.message || "-"}</Td>
+                        <Td>
+                          {r.createdAt?.seconds
+                            ? new Date(
+                                r.createdAt.seconds * 1000
+                              ).toLocaleString()
+                            : "-"}
+                        </Td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </AccordionContent>
+            )}
+          </Accordion>
+        </Panel>
+      )}
+      {activeTab === "CDN" && (
+        <Panel>
+          <h2>📊 CloudFront 캐시 통계</h2>
+          <Table>
+            <thead>
+              <tr>
+                <Th>날짜</Th>
+                <Th>총 요청 수</Th>
+                <Th>Hit</Th>
+                <Th>Miss</Th>
+                <Th>Hit Rate (%)</Th>
+              </tr>
+            </thead>
+            <tbody>
+              {logData.map((log, idx) => (
+                <tr key={idx}>
+                  <Td>{log.date}</Td>
+                  <Td>{log.totalRequests}</Td>
+                  <Td>{log.hit}</Td>
+                  <Td>{log.miss}</Td>
+                  <Td>{log.hitRate}</Td>
                 </tr>
-              </thead>
-              <tbody>
-                {history.map((r, i) => (
-                  <tr key={i}>
-                    <Td>{r.name}</Td>
-                    <Td>{r.attending === "yes" ? "참석" : "불참"}</Td>
-                    <Td>{r.count || 1}</Td>
-                    <Td>{r.message || "-"}</Td>
-                    <Td>
-                      {r.createdAt?.seconds
-                        ? new Date(r.createdAt.seconds * 1000).toLocaleString()
-                        : "-"}
-                    </Td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </AccordionContent>
-        )}
-      </Accordion>
+              ))}
+            </tbody>
+          </Table>
+        </Panel>
+      )}
 
-      <h2 style={{ marginTop: "3rem" }}>📊 CloudFront 캐시 통계</h2>
-      <Table>
-        <thead>
-          <tr>
-            <Th>날짜</Th>
-            <Th>총 요청 수</Th>
-            <Th>Hit</Th>
-            <Th>Miss</Th>
-            <Th>Hit Rate (%)</Th>
-          </tr>
-        </thead>
-        <tbody>
-          {logData.map((log, idx) => (
-            <tr key={idx}>
-              <Td>{log.date}</Td>
-              <Td>{log.totalRequests}</Td>
-              <Td>{log.hit}</Td>
-              <Td>{log.miss}</Td>
-              <Td>{log.hitRate}</Td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
+      {activeTab === "Kakao" && (
+        <Panel>
+          <h2>카카오 메시지 발송</h2>
+          <KakaoSenderSection />
+        </Panel>
+      )}
+    </Wrapper>
   );
 };
 
