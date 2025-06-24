@@ -130,21 +130,21 @@ const ZoomScrollSection = () => {
   const [scrollProgress, setScrollProgress] = useState(0); // 0 (섹션 진입 시) ~ 1 (애니메이션 종료 시)
 
   const imgs = [
-    getAssetUrl("/yuna/scroll_01.webp"), // 실제 이미지 경로로 교체
-    getAssetUrl("/yuna/scroll_02.webp"),
-    getAssetUrl("/yuna/scroll_03.webp"),
-    getAssetUrl("/yuna/scroll_04.webp"),
-    getAssetUrl("/yuna/scroll_05.webp"),
-    getAssetUrl("/yuna/scroll_06.webp"),
+    getAssetUrl("yuna/scroll_01.webp"), // 실제 이미지 경로로 교체
+    getAssetUrl("yuna/scroll_02.webp"),
+    getAssetUrl("yuna/scroll_03.webp"),
+    getAssetUrl("yuna/scroll_04.webp"),
+    getAssetUrl("yuna/scroll_05.webp"),
+    getAssetUrl("yuna/scroll_06.webp"),
   ];
 
   const illust = [
-    getAssetUrl("/yuna/illu_01.webp"), // 실제 이미지 경로로 교체
-    getAssetUrl("/yuna/illu_02.webp"),
-    getAssetUrl("/yuna/illu_03.webp"),
-    getAssetUrl("/yuna/illu_04.webp"),
-    getAssetUrl("/yuna/illu_05.webp"),
-    getAssetUrl("/yuna/illu_06.webp"),
+    getAssetUrl("yuna/illu_01.webp"), // 실제 이미지 경로로 교체
+    getAssetUrl("yuna/illu_02.webp"),
+    getAssetUrl("yuna/illu_03.webp"),
+    getAssetUrl("yuna/illu_04.webp"),
+    getAssetUrl("yuna/illu_05.webp"),
+    getAssetUrl("yuna/illu_06.webp"),
   ];
 
   const handleScroll = useCallback(() => {
