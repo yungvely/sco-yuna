@@ -19,7 +19,7 @@ const Typography = ({
   children,
   font = 0,
   size = 1,
-  color = "#333",
+  color = "inherit",
   lineHeight = 1.2,
   center = false,
   as = "span",

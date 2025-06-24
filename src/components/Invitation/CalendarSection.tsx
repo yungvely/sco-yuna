@@ -129,7 +129,10 @@ const Days = styled.span`
   margin: 0 4px;
 `;
 
-const CalendarSection = () => {
+interface Props {
+  variant?: "yuna" | "sco" | null;
+}
+const CalendarSection = ({ variant = null }: Props) => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -204,7 +207,7 @@ const CalendarSection = () => {
         <DdayWrap>
           {isDday || !timeLeft.expired ? (
             <>
-              {!timeLeft.expired && (
+              {variant !== "yuna" && !timeLeft.expired && (
                 <Countdown>
                   <Block>
                     <Label>Days</Label>

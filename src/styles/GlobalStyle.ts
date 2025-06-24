@@ -12,6 +12,7 @@ export const GlobalStyle = createGlobalStyle`
     src: url("/fonts/르네상스.ttf") format("truetype");
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
   }
   
   @font-face {
@@ -19,27 +20,16 @@ export const GlobalStyle = createGlobalStyle`
     src: url("/fonts/밍기적체.ttf") format("truetype");
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
   }
   
-  @font-face {
-    font-family: "밑미";
-    src: url("/fonts/밑미.ttf") format("truetype");
-    font-weight: 400;
-    font-style: normal;
-  }
-  
-  @font-face {
-    font-family: "콘콘체";
-    src: url("/fonts/콘콘체.ttf") format("truetype");
-    font-weight: 400;
-    font-style: normal;
-  }
   
   @font-face {
     font-family: "Bedmiwoc";
     src: url("/fonts/Bedmiwoc.otf") format("opentype");
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
   }
   
   @font-face {
@@ -47,29 +37,31 @@ export const GlobalStyle = createGlobalStyle`
     src: url("/fonts/DarhoutyFrederics.otf") format("opentype");
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
   }
   
   @font-face {
-    font-family: "GowunDodum-Regular";
+    font-family: "무궁체";
+    src: url("/fonts/MuGung.woff2") format("woff2"),
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  @font-face {
+    font-family: "GowunDodum";
     src: url("/fonts/GowunDodum-Regular.woff2") format("woff2"),
-         url("/fonts/GowunDodum-Regular.ttf") format("truetype");
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
   }
-  
-  @font-face {
-    font-family: "KCC-Ahnchangho";
-    src: url("/fonts/KCC-Ahnchangho.woff2") format("woff2"),
-         url("/fonts/KCC-Ahnchangho.otf") format("opentype");
-    font-weight: 400;
-    font-style: normal;
-  }
-  
+    
   @font-face {
     font-family: "KingRimba";
     src: url("/fonts/KingRimba.ttf") format("truetype");
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
   }
   
   @font-face {
@@ -77,6 +69,7 @@ export const GlobalStyle = createGlobalStyle`
     src: url("/fonts/Migrand.otf") format("opentype");
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
   }
   
   @font-face {
@@ -84,9 +77,8 @@ export const GlobalStyle = createGlobalStyle`
     src: url("/fonts/WayCome.otf") format("opentype");
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
   }
-  
-  
   
 
   html {
@@ -140,5 +132,9 @@ export const GlobalStyle = createGlobalStyle`
     font-family: inherit;
   }
   
-
+  img {
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-drag: none;
+  }
 `;

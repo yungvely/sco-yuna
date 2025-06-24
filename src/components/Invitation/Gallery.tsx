@@ -1,11 +1,17 @@
 import { getAssetUrl } from "@/lib/getAssetUrl";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import styled from "styled-components";
+import "swiper/css";
+import "swiper/css/autoplay";
+import { Autoplay } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { CustomLightbox } from "../common/CustomLightbox";
-import { Heading, Title } from "./styles";
+
+const tabNames = ["❤️", "🧡", "💛", "💚", "💙", "💜", "🤍", "🖤"];
+const IMAGES_PER_TAB = 9; // 3줄 (3x3)
 
 const Wrapper = styled.section`
   position: relative;
@@ -13,41 +19,73 @@ const Wrapper = styled.section`
   text-align: center;
 `;
 
+const Title = styled.h3`
+  color: #b37542;
+  letter-spacing: 1px;
+`;
+
+const Heading = styled.h2`
+  font-size: 1.5rem;
+  margin: 8px 0 24px;
+`;
+
+const Description = styled.p`
+  font-size: 0.95rem;
+  color: #333;
+  line-height: 1.7;
+  margin-bottom: 24px;
+`;
+
+const TabRow = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: nowrap;
+`;
+
+const Tab = styled.button<{ $active: boolean }>`
+  padding: 8px;
+  color: ${({ $active }) => ($active ? "#fff" : "#444")};
+  border: 1px solid ${({ $active }) => ($active ? "#ffd733" : "#fff")};
+  border-radius: 20px;
+  cursor: pointer;
+`;
+
 const Grid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  transition: all 0.5s ease;
+  max-width: 425px;
+  margin: 0 auto;
+  width: 100%;
 `;
 
 const ImgWrapper = styled.div`
   width: 100%;
   aspect-ratio: 1 / 1;
   position: relative;
+  overflow: hidden;
+  cursor: pointer;
 `;
 
 const StyledImg = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
   border-radius: 8px;
-  cursor: pointer;
   position: absolute;
   top: 0;
   left: 0;
-  transition: opacity 0.4s ease;
 `;
 
 const MoreButton = styled.button`
-  margin-top: 24px;
+  margin-top: 16px;
   background: none;
   border: none;
   color: #444;
-  cursor: pointer;
   font-size: 16px;
-  padding: 8px 0;
-  position: relative;
+  cursor: pointer;
 
   &::after {
     content: "";
@@ -61,17 +99,23 @@ const MoreButton = styled.button`
   }
 `;
 
-type LazyImageProps = {
-  src: string;
-  onClick: () => void;
-};
+const SkeletonGrid = () => (
+  <Grid>
+    {Array.from({ length: IMAGES_PER_TAB }).map((_, i) => (
+      <Skeleton
+        key={i}
+        style={{ width: "100%", aspectRatio: "1 / 1", borderRadius: "8px" }}
+      />
+    ))}
+  </Grid>
+);
 
-const LazyImage = ({ src, onClick }: LazyImageProps) => {
+const LazyImage = ({ src, onClick }: { src: string; onClick: () => void }) => {
   const [hasLoaded, setHasLoaded] = useState(false);
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
 
   return (
-    <ImgWrapper ref={ref}>
+    <ImgWrapper ref={ref} onClick={onClick}>
       {!hasLoaded && (
         <Skeleton
           style={{
@@ -87,9 +131,8 @@ const LazyImage = ({ src, onClick }: LazyImageProps) => {
       {inView && (
         <StyledImg
           src={src}
-          alt="wedding"
+          alt=""
           onLoad={() => setHasLoaded(true)}
-          onClick={onClick}
           style={{ opacity: hasLoaded ? 1 : 0 }}
         />
       )}
@@ -97,38 +140,30 @@ const LazyImage = ({ src, onClick }: LazyImageProps) => {
   );
 };
 
-const SkeletonGrid = () => (
-  <Grid>
-    {Array.from({ length: 9 }).map((_, i) => (
-      <Skeleton
-        key={i}
-        style={{ width: "100%", aspectRatio: "1 / 1", borderRadius: "8px" }}
-      />
-    ))}
-  </Grid>
-);
-
 type GallerySectionProps = {
-  variant?: "sco" | "yuna";
+  variant?: "yuna" | "sco" | null;
 };
 
-export const GallerySection = ({ variant }: GallerySectionProps) => {
-  const [allImages, setAllImages] = useState<string[] | null>(null);
-  const [expanded, setExpanded] = useState(false);
+export const GallerySection = ({ variant = null }: GallerySectionProps) => {
+  const [tabs, setTabs] = useState<string[][]>([]);
+  const [visibleCounts, setVisibleCounts] = useState<number[]>([]);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [visibleImages, setVisibleImages] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState(0);
+  const swiperRef = useRef<any>(null);
 
   useEffect(() => {
     const load = async () => {
-      try {
-        const res = await fetch(`/data/${variant ? variant : "default"}.json`);
-        const json: string[] = await res.json();
-        const images = json.map((path) => getAssetUrl(path));
-        setAllImages(images);
-        setVisibleImages(images.slice(0, 9));
-      } catch (err) {
-        console.error("Failed to load image list", err);
-        setAllImages([]);
+      const res = await fetch(`/data/${variant || "default"}.json`);
+      const data = await res.json();
+
+      if (Array.isArray(data[0])) {
+        const resolved = data.map((group: string[]) => group.map(getAssetUrl));
+        setTabs(resolved);
+        setVisibleCounts(resolved.map(() => IMAGES_PER_TAB));
+      } else {
+        const resolved = data.map(getAssetUrl);
+        setTabs([resolved]);
+        setVisibleCounts([IMAGES_PER_TAB]);
       }
     };
     load();
@@ -148,43 +183,97 @@ export const GallerySection = ({ variant }: GallerySectionProps) => {
     }
   }, [selectedIndex]);
 
-  const handleExpand = () => {
-    if (allImages) {
-      setVisibleImages(allImages);
-      setExpanded(true);
-    }
+  const handleMore = (tabIdx: number) => {
+    setVisibleCounts((prev) =>
+      prev.map((count, idx) =>
+        idx === tabIdx ? count + IMAGES_PER_TAB : count
+      )
+    );
+    setTimeout(() => swiperRef.current?.updateAutoHeight?.(), 100);
   };
+
+  const globalIndex = (tabIdx: number, localIdx: number) =>
+    tabs.slice(0, tabIdx).reduce((acc, g) => acc + g.length, 0) + localIdx;
 
   return (
     <Wrapper>
       <Title>GALLERY</Title>
-      <Heading>웨딩 갤러리</Heading>
-
-      {allImages === null ? (
-        <SkeletonGrid />
+      {variant === "yuna" ? (
+        <>
+          <Heading>웨딩사진 100만장 📸</Heading>
+          <Description>
+            사진 자랑하고 싶어서 Self로 모청을 만든만큼 <br />
+            사진이 엄청 많아!! <br />
+            너니까 이렇게 자랑하는거 알지?? 👉🏻👈🏻
+            <br />
+            그냥 즐겁게 구경해줘 🤗
+          </Description>
+        </>
       ) : (
-        <Grid>
-          {visibleImages.map((src, idx) => (
-            <LazyImage
-              key={src}
-              src={src}
-              onClick={() => setSelectedIndex(idx)}
-            />
-          ))}
-        </Grid>
+        <Heading>웨딩 갤러리</Heading>
       )}
 
-      {!expanded && allImages && allImages.length > 9 && (
-        <MoreButton onClick={handleExpand}>더보기</MoreButton>
+      {tabs.length > 1 && (
+        <TabRow>
+          {tabNames.map((name, i) => (
+            <Tab
+              key={name}
+              $active={i === activeTab}
+              onClick={() => {
+                setActiveTab(i);
+                swiperRef.current?.slideTo(i);
+              }}
+            >
+              {name}
+            </Tab>
+          ))}
+        </TabRow>
       )}
-      {allImages && (
-        <CustomLightbox
-          open={selectedIndex !== null}
-          images={allImages}
-          index={selectedIndex || 0}
-          onClose={() => setSelectedIndex(null)}
-        />
-      )}
+
+      <Swiper
+        onSwiper={(swiper: any) => (swiperRef.current = swiper)}
+        onSlideChange={(swiper: { activeIndex: SetStateAction<number> }) =>
+          setActiveTab(swiper.activeIndex)
+        }
+        slidesPerView={1}
+        spaceBetween={32}
+        autoHeight
+        modules={[Autoplay]}
+      >
+        {tabs.length === 0
+          ? Array.from({
+              length: variant === "yuna" ? tabNames.length : 1,
+            }).map((_, idx) => (
+              <SwiperSlide key={idx}>
+                <SkeletonGrid />
+              </SwiperSlide>
+            ))
+          : tabs.map((images, tabIdx) => (
+              <SwiperSlide key={tabIdx}>
+                <Grid>
+                  {images.slice(0, visibleCounts[tabIdx]).map((src, idx) => (
+                    <LazyImage
+                      key={src}
+                      src={src}
+                      onClick={() => setSelectedIndex(globalIndex(tabIdx, idx))}
+                    />
+                  ))}
+                </Grid>
+                {visibleCounts[tabIdx] < images.length && (
+                  <MoreButton onClick={() => handleMore(tabIdx)}>
+                    더보기
+                  </MoreButton>
+                )}
+              </SwiperSlide>
+            ))}
+      </Swiper>
+
+      <CustomLightbox
+        open={selectedIndex !== null}
+        images={tabs.flat()}
+        index={selectedIndex || 0}
+        onClose={() => setSelectedIndex(null)}
+      />
     </Wrapper>
   );
 };

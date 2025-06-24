@@ -178,8 +178,8 @@ const ArchHero = forwardRef<HTMLDivElement, Props>(
               </>
             ) : (
               <CrossFadeImages
-                srcA={getAssetUrl("studio/studio_015.webp")}
-                srcB={getAssetUrl("studio/studio_016.webp")}
+                srcA={getAssetUrl("main/main_01.webp")}
+                srcB={getAssetUrl("main/main_02.webp")}
               >
                 <CanvasWrapper>{children}</CanvasWrapper>
               </CrossFadeImages>

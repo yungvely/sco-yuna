@@ -217,30 +217,21 @@ const AccountSection = ({ variant }: Props) => {
         너그러운 마음으로 양해 부탁드립니다.
       </Description>
 
-      {variant === "yuna" ? (
-        <AccountCard>
-          {renderAccountRow(accounts.bride.find((a) => a.name === "안윤아")!)}
-        </AccountCard>
-      ) : (
-        <>
-          <Tabs>
-            <TabButton
-              $active={selected === "groom"}
-              onClick={() => setSelected("groom")}
-            >
-              신랑측
-            </TabButton>
-            <TabButton
-              $active={selected === "bride"}
-              onClick={() => setSelected("bride")}
-            >
-              신부측
-            </TabButton>
-          </Tabs>
-          <AccountCard>{accounts[selected].map(renderAccountRow)}</AccountCard>
-        </>
-      )}
-
+      <Tabs>
+        <TabButton
+          $active={selected === "groom"}
+          onClick={() => setSelected("groom")}
+        >
+          신랑측
+        </TabButton>
+        <TabButton
+          $active={selected === "bride"}
+          onClick={() => setSelected("bride")}
+        >
+          신부측
+        </TabButton>
+      </Tabs>
+      <AccountCard>{accounts[selected].map(renderAccountRow)}</AccountCard>
       {copied && (
         <CopyPopup>
           <CheckCircle size={18} /> 복사되었습니다

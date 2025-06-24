@@ -33,10 +33,11 @@ const Button = styled.button`
 `;
 
 interface Props {
+  variant?: "yuna" | "sco" | null;
   onClick: () => void;
 }
 
-const RSVPSection = ({ onClick }: Props) => {
+const RSVPSection = ({ onClick, variant }: Props) => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
 
   return (
@@ -50,15 +51,25 @@ const RSVPSection = ({ onClick }: Props) => {
         <Title>R.S.V.P.</Title>
         <Heading>참석 의사 전달</Heading>
         <Description>
-          특별한 날 축하의 마음으로
-          <br />
-          참석해주시는 모든 분들을
-          <br />
-          귀하게 모시고자 여쭙는 것이니,
-          <br />
-          참석의 부담은 가지지 말아주시고,
-          <br />
-          참석정보를 알려주시면 감사하겠습니다.
+          {variant === "yuna" ? (
+            <>
+              어쩔수 없는 일이생겨 못 와도 괜찮지만
+              <br />
+              참석의사를 알려주면 좋을거 같아 🥹
+            </>
+          ) : (
+            <>
+              특별한 날 축하의 마음으로
+              <br />
+              참석해주시는 모든 분들을
+              <br />
+              귀하게 모시고자 여쭙는 것이니,
+              <br />
+              참석의 부담은 가지지 말아주시고,
+              <br />
+              참석정보를 알려주시면 감사하겠습니다.
+            </>
+          )}
         </Description>
         <Button onClick={onClick}>참석의사 전달하기</Button>
       </Wrapper>

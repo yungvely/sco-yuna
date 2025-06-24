@@ -2,34 +2,35 @@
 
 import RSVPForm from "@/components/RSVP/RSVPForm";
 import RSVPPopup from "@/components/RSVP/RSVPPopup";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import Typography from "./common/Typography";
-import ArchHero from "./Header/ArchHero";
-import { FlowerCanvas } from "./Header/FlowerCanvas";
 import AccountSection from "./Invitation/AccountSection";
 import CalendarSection from "./Invitation/CalendarSection";
 import { GallerySection } from "./Invitation/Gallery";
-import { GalleryTabs } from "./Invitation/GalleryTabs";
 import GreetingSection from "./Invitation/GreetingSection";
 import InformationSection from "./Invitation/InformationSection";
+import LastSection from "./Invitation/LastSection";
 import LocationSection from "./Invitation/LocationSection";
+import MainVisualSection from "./Invitation/MainVisualSection";
 import RSVPSection from "./Invitation/RSVPSection";
 import ShareSection from "./Invitation/ShareSection";
+import ZoomScrollSection from "./Invitation/ZoomScrollSection";
 
 type Props = {
   variant: "yuna" | "sco" | null;
   openingEnd: boolean;
+  nickname?: string | null;
 };
 
 const Copyright = styled.div`
   margin-bottom: 20px;
 `;
-const Invitation = ({ variant, openingEnd }: Props) => {
+
+const Invitation = ({ variant, openingEnd, nickname }: Props) => {
   const [showPopup, setShowPopup] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
-  const sectionRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     if (!openingEnd) return;
     if (openingEnd) return setShowPopup(false);
@@ -56,10 +57,7 @@ const Invitation = ({ variant, openingEnd }: Props) => {
     }
 
     // 공유로 들어온 경우엔 주소만 조용히 변경 (replaceState)
-    if (
-      url.pathname === "/yuna"
-      // && url.searchParams.get("via") === "kakao"
-    ) {
+    if (url.pathname === "/yuna" && url.searchParams.get("via") === "kakao") {
       const newUrl = `${window.location.origin}/`; // or /?name=xx 유지 원하면 조정
       window.history.replaceState(null, "", newUrl);
     }
@@ -67,28 +65,29 @@ const Invitation = ({ variant, openingEnd }: Props) => {
 
   return (
     <>
-      {/* <FlowerCanvas
-        sectionRef={sectionRef}
-        //variant="blossom"
-      /> */}
-      <ArchHero ref={sectionRef}>
-        <FlowerCanvas sectionRef={sectionRef} />
-      </ArchHero>
-
-      <GreetingSection variant={variant ? variant : "modern"} />
-      <CalendarSection />
+      <MainVisualSection variant={variant} />
+      <GreetingSection
+        variant={variant ? variant : "modern"}
+        nickname={nickname}
+      />
+      {variant === "yuna" && <ZoomScrollSection />}
+      <CalendarSection variant={variant} />
+      <GallerySection variant={variant} />
       {variant === "yuna" ? (
-        <YunaVersion />
+        <>
+          <InformationSection variant={variant} />
+          <RSVPSection variant={variant} onClick={() => setShowForm(true)} />
+          <LastSection />
+        </>
       ) : (
         <>
-          <GallerySection />
           <LocationSection />
           <InformationSection />
+          <RSVPSection onClick={() => setShowForm(true)} />
+          <AccountSection variant={variant} />
+          <ShareSection variant={variant} />
         </>
       )}
-      <RSVPSection onClick={() => setShowForm(true)} />
-      <AccountSection variant={variant} />
-      <ShareSection variant={variant} />
       <Copyright>
         <Typography as="div" center size={0.75}>
           Copyright © 2025 yungvely All right reserved.
@@ -111,13 +110,5 @@ const Invitation = ({ variant, openingEnd }: Props) => {
     </>
   );
 };
-
-const YunaVersion = () => (
-  <>
-    <GalleryTabs />
-    <InformationSection />
-    <LocationSection />
-  </>
-);
 
 export default Invitation;

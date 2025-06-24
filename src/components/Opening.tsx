@@ -14,7 +14,7 @@ const fadeOut = keyframes`
   }
 `;
 
-const Wrapper = styled.div<{ $isFadingOut?: boolean }>`
+const Wrapper = styled.div<{ $isFadingOut?: boolean; $nickname?: boolean }>`
   height: 100vh;
   display: flex;
   align-items: center;
@@ -23,7 +23,10 @@ const Wrapper = styled.div<{ $isFadingOut?: boolean }>`
   align-content: center;
   flex-wrap: wrap;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(
+    ${({ $nickname }) => ($nickname ? `0, 0, 0,0.6` : ` 255, 255, 255,0.4`)}
+  );
+
   transition: opacity 0.8s ease-in-out;
   position: fixed;
   top: 0;
@@ -91,19 +94,6 @@ const SVGContainer = styled.div`
   justify-content: center;
   width: 100%;
 `;
-const ShadedText = styled.span`
-  font-size: 48px;
-  font-weight: bold;
-  color: #fff;
-  font-family: "Mitchell", cursive;
-
-  text-shadow: 1px 1px 0 #bfa25a, 2px 2px 0 #bfa25a, 3px 3px 0 #bfa25a,
-    4px 4px 0 #bfa25a, 5px 5px 0 #bfa25a, 6px 6px 0 #bfa25a;
-
-  /* 안티앨리어싱 효과 */
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-`;
 const Opening = ({
   onEnd,
   nickname,
@@ -113,33 +103,40 @@ const Opening = ({
 }) => {
   const hasNickname = !!nickname;
   const [isFadingOut, setIsFadingOut] = useState(false);
-  const inviteFont = hasNickname
-    ? "/fonts/노희찬체.otf"
-    : "/fonts/노희찬체.otf";
-  const fontUrls = [
-    inviteFont,
-    "/fonts/Mitchell.otf",
-    "/fonts/HetigonVintage.otf",
-    "/fonts/Mitchell.otf",
-  ];
-  const fontSizes = [30, 50, 55, 40];
-  const lineHeights = [1.2, 1.8, 1.8, 1.2];
-  const strokeWidths = [1, 1.5, 1.5, 1.3];
+
+  const fontUrls = hasNickname
+    ? [
+        "/fonts/밍기적체.ttf",
+        "/fonts/HetigonVintage.otf",
+        "/fonts/Bedmiwoc.otf",
+        "/fonts/노희찬체.otf",
+      ]
+    : [
+        "/fonts/노희찬체.otf",
+        "/fonts/Mitchell.otf",
+        "/fonts/HetigonVintage.otf",
+        "/fonts/Mitchell.otf",
+      ];
+  const fontSizes = hasNickname ? [40, 0, 0, 35] : [30, 50, 55, 40];
+  const lineHeights = hasNickname ? [1, 1.4, 1.8, 1.8] : [1.2, 1.8, 1.8, 1.2];
+  const strokeWidths = hasNickname ? [1, 1.4, 1.8, 1] : [1, 1.5, 1.5, 1.3];
   const strokeColors = ["#fff", "#fff", "rgba(63, 81, 181,0.7)", "#f1e0a5"];
-  const fillColors = ["#fff", "#fff", "#fdf8d0", "#3F51B5"];
+  const fillColors = hasNickname
+    ? ["#fff", "#fff", "#fdf8d0", "#f1e0a5"]
+    : ["#fff", "#fff", "#fdf8d0", "#3F51B5"];
   const lineDelays = [40, 0, 0, 0]; // [100, 200, 300, 800];
 
-  const lines = [
-    `${
-      hasNickname ? `Only for you, ${nickname}` : "우리의 결혼식에 초대합니다"
-    }`,
-    "Seok Ho & Yun A",
-    "2025. 8. 23",
-    "Save the Date",
-  ];
+  const lines = hasNickname
+    ? [`Dear ${nickname}`, "", "", "결혼식에 와줄거지?"]
+    : [
+        "우리의 결혼식에 초대합니다",
+        "Seok Ho & Yun A",
+        "2025. 8. 23",
+        "Save the Date",
+      ];
 
   return (
-    <Wrapper $isFadingOut={isFadingOut}>
+    <Wrapper $isFadingOut={isFadingOut} $nickname={!!nickname}>
       <Heart />
       <SVGContainer>
         <HandwritingText
@@ -159,7 +156,6 @@ const Opening = ({
           }}
         />
       </SVGContainer>
-      {/* <ShadedText>Seok Ho & Yun A</ShadedText> */}
     </Wrapper>
   );
 };

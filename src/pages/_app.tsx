@@ -13,7 +13,6 @@ const AppWrapper = styled.div`
   max-width: 425px;
   margin: 0 auto;
   position: relative;
-  overflow-x: scroll;
   line-height: 1.5;
 
   font-family: ${BatangRegular.style.fontFamily}, sans-serif;
@@ -22,14 +21,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const scale = useFontStore((s) => s.scale);
   return (
     <ThemeProvider theme={{ ...theme, fontSize: `${16 * scale}px` }}>
-      <main className={BatangRegular.className}>
-        <NaverMapLoader />
-        <KakaoInit />
-        <AppWrapper>
-          <GlobalStyle />
-          <Component {...pageProps} />
-        </AppWrapper>
-      </main>
+      <NaverMapLoader />
+      <KakaoInit />
+      <AppWrapper>
+        <GlobalStyle />
+        <Component {...pageProps} />
+      </AppWrapper>
     </ThemeProvider>
   );
 }

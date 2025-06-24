@@ -65,7 +65,7 @@ const PasswordWrapper = styled.div`
   height: 100vh;
   flex-direction: column;
   align-items: center;
-  margin-top: 4rem;
+  padding-top: 4rem;
 `;
 const Wrapper = styled.div`
   display: flex;

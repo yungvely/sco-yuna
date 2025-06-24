@@ -84,7 +84,7 @@ export default function HomePage({ nickname, variant }: Props) {
         />
       </Head>
 
-      <Invitation variant={variant} openingEnd={opening} />
+      <Invitation nickname={nickname} variant={variant} openingEnd={opening} />
       <Opening nickname={nickname} onEnd={() => setOpening(false)} />
       {!opening && <BackgroundMusic />}
       <FontSizeControl visible={!opening && variant !== "yuna"} />
