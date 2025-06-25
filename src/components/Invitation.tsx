@@ -58,11 +58,30 @@ const Invitation = ({ variant, openingEnd, nickname }: Props) => {
 
     // 공유로 들어온 경우엔 주소만 조용히 변경 (replaceState)
     if (url.pathname === "/yuna" && url.searchParams.get("via") === "kakao") {
-      const newUrl = `${window.location.origin}/`; // or /?name=xx 유지 원하면 조정
-      window.history.replaceState(null, "", newUrl);
+      const name = url.searchParams.get("name");
+      const via = url.searchParams.get("via");
+
+      const currentState = { name, via, originalPath: url.pathname };
+
+      const newUrl = `${window.location.origin}/`;
+
+      // state 객체와 함께 히스토리를 교체합니다.
+      window.history.replaceState(currentState, "", newUrl);
     }
   }, []);
 
+  useEffect(() => {
+    const handleBeforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
   return (
     <>
       <MainVisualSection variant={variant} />
@@ -77,7 +96,7 @@ const Invitation = ({ variant, openingEnd, nickname }: Props) => {
         <>
           <InformationSection variant={variant} />
           <RSVPSection variant={variant} onClick={() => setShowForm(true)} />
-          <LastSection />
+          <LastSection nickname={nickname} />
         </>
       ) : (
         <>

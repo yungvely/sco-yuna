@@ -1,4 +1,7 @@
+"use client";
+
 import { getAssetUrl } from "@/lib/getAssetUrl";
+import { AnimatePresence } from "framer-motion";
 import { SetStateAction, useEffect, useRef, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import Skeleton from "react-loading-skeleton";
@@ -169,19 +172,63 @@ export const GallerySection = ({ variant = null }: GallerySectionProps) => {
     load();
   }, [variant]);
 
+  const closeLightbox = () => {
+    if (window.history.state?.lightbox) {
+      window.history.replaceState(
+        window.history.state.previousState, // 열기 전 상태로 복원
+        "",
+        window.location.pathname
+      );
+    }
+    setSelectedIndex(null);
+  };
+
+  useEffect(() => {
+    const handlePopState = (event: PopStateEvent) => {
+      if (!event.state?.lightbox) {
+        setSelectedIndex(null);
+      }
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
   useEffect(() => {
     if (selectedIndex !== null) {
-      window.history.pushState({ lightbox: true }, "");
+      if (!window.history.state?.lightbox) {
+        const currentState = window.history.state;
+        window.history.pushState(
+          { lightbox: true, previousState: currentState },
+          ""
+        );
+      }
 
-      const handlePopState = () => setSelectedIndex(null);
-      window.addEventListener("popstate", handlePopState);
+      if (tabs.length > 1) {
+        const newTabIndex = findTabIndexFromGlobalIndex(selectedIndex);
+        if (newTabIndex !== activeTab) {
+          setActiveTab(newTabIndex);
+          swiperRef.current?.slideTo(newTabIndex);
+        }
+      }
 
-      return () => {
-        window.removeEventListener("popstate", handlePopState);
-        if (window.history.state?.lightbox) window.history.back();
-      };
+      document.body.style.overflow = "hidden";
     }
-  }, [selectedIndex]);
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [selectedIndex, tabs]);
+
+  const findTabIndexFromGlobalIndex = (globalIndex: number) => {
+    if (globalIndex === null || !tabs.length) return 0;
+    let cumulativeLength = 0;
+    for (let i = 0; i < tabs.length; i++) {
+      cumulativeLength += tabs[i].length;
+      if (globalIndex < cumulativeLength) {
+        return i;
+      }
+    }
+    return tabs.length - 1;
+  };
 
   const handleMore = (tabIdx: number) => {
     setVisibleCounts((prev) =>
@@ -268,12 +315,21 @@ export const GallerySection = ({ variant = null }: GallerySectionProps) => {
             ))}
       </Swiper>
 
-      <CustomLightbox
-        open={selectedIndex !== null}
-        images={tabs.flat()}
-        index={selectedIndex || 0}
-        onClose={() => setSelectedIndex(null)}
-      />
+      <AnimatePresence
+        onExitComplete={() => {
+          document.body.style.overflow = "";
+        }}
+      >
+        {selectedIndex !== null && (
+          <CustomLightbox
+            open={selectedIndex !== null}
+            images={tabs.flat()}
+            index={selectedIndex || 0}
+            onClose={closeLightbox}
+            onIndexChange={(newIndex) => setSelectedIndex(newIndex)}
+          />
+        )}
+      </AnimatePresence>
     </Wrapper>
   );
 };

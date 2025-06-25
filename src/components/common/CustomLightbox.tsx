@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 import "swiper/css";
@@ -84,9 +84,16 @@ type Props = {
   images: string[];
   index: number;
   onClose: () => void;
+  onIndexChange?: (index: number) => void;
 };
 
-export const CustomLightbox = ({ open, images, index, onClose }: Props) => {
+export const CustomLightbox = ({
+  open,
+  images,
+  index,
+  onClose,
+  onIndexChange,
+}: Props) => {
   const swiperRef = useRef<any>(null);
 
   const handleKeyDown = useCallback(
@@ -97,55 +104,48 @@ export const CustomLightbox = ({ open, images, index, onClose }: Props) => {
   );
 
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", handleKeyDown);
-    }
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [open, handleKeyDown]);
+  }, [handleKeyDown]);
 
   return (
-    <AnimatePresence>
-      {open && (
-        <Overlay
-          key="overlay"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <SwiperContainer>
-            <CloseButton onClick={onClose}>✕</CloseButton>
-            <NavButton left onClick={() => swiperRef.current?.slidePrev()}>
-              ‹
-            </NavButton>
-            <NavButton onClick={() => swiperRef.current?.slideNext()}>
-              ›
-            </NavButton>
+    <Overlay
+      key="overlay"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      <SwiperContainer>
+        <CloseButton onClick={onClose}>✕</CloseButton>
+        <NavButton left onClick={() => swiperRef.current?.slidePrev()}>
+          ‹
+        </NavButton>
+        <NavButton onClick={() => swiperRef.current?.slideNext()}>›</NavButton>
 
-            <Swiper
-              onSwiper={(swiper: any) => (swiperRef.current = swiper)}
-              initialSlide={index}
-              loop
-              keyboard={{ enabled: true }}
-              spaceBetween={12}
-              modules={[Keyboard]}
-              style={{ width: "100%", height: "100%" }}
-            >
-              {images.map((src) => (
-                <SwiperSlide key={src}>
-                  <SlideWrapper>
-                    <Image src={src} alt="Gallery" />
-                  </SlideWrapper>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-          </SwiperContainer>
-        </Overlay>
-      )}
-    </AnimatePresence>
+        <Swiper
+          onSwiper={(swiper: any) => (swiperRef.current = swiper)}
+          initialSlide={index}
+          loop
+          keyboard={{ enabled: true }}
+          spaceBetween={12}
+          modules={[Keyboard]}
+          style={{ width: "100%", height: "100%" }}
+          onRealIndexChange={(swiper: { realIndex: number }) => {
+            onIndexChange?.(swiper.realIndex);
+          }}
+        >
+          {images.map((src) => (
+            <SwiperSlide key={src}>
+              <SlideWrapper>
+                <Image src={src} alt="Gallery" />
+              </SlideWrapper>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </SwiperContainer>
+    </Overlay>
   );
 };

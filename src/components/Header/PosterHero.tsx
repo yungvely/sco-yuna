@@ -89,7 +89,7 @@ const PosterHero = () => {
           <Shadow $black>
             한석호 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <Typography size={0.9} color="#fff" lineHeight={1}>
-              2025.08.28
+              2025.08.23
             </Typography>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 안윤아
           </Shadow>
