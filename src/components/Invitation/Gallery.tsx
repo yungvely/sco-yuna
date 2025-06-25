@@ -210,13 +210,21 @@ export const GallerySection = ({ variant = null }: GallerySectionProps) => {
           swiperRef.current?.slideTo(newTabIndex);
         }
       }
+    }
+  }, [selectedIndex, tabs]);
 
+  useEffect(() => {
+    if (selectedIndex !== null) {
       document.body.style.overflow = "hidden";
+    } else {
+      // 이 로직은 onExitComplete에서 처리하므로 비워둬도 되지만,
+      // 만일을 위해 남겨두거나 onExitComplete와 맞춰서 동작하게 할 수 있습니다.
+      // 현재는 onExitComplete가 주 담당입니다.
     }
     return () => {
       document.body.style.overflow = "";
     };
-  }, [selectedIndex, tabs]);
+  }, [selectedIndex]);
 
   const findTabIndexFromGlobalIndex = (globalIndex: number) => {
     if (globalIndex === null || !tabs.length) return 0;
