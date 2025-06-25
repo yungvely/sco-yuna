@@ -132,6 +132,10 @@ const Days = styled.span`
 interface Props {
   variant?: "yuna" | "sco" | null;
 }
+const WEDDING_DAY_START = new Date("2025-08-23T00:00:00+09:00");
+const WEDDING_DAY_END = new Date("2025-08-24T00:00:00+09:00");
+const WEDDING_DATE_TIME = new Date("2025-08-23T12:30:00+09:00");
+
 const CalendarSection = ({ variant = null }: Props) => {
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.2 });
   const [timeLeft, setTimeLeft] = useState({
@@ -142,21 +146,35 @@ const CalendarSection = ({ variant = null }: Props) => {
     expired: false,
   });
 
-  const weddingDate = new Date("2025-08-23T12:30:00+09:00");
-
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
 
-      const diff = Math.max(weddingDate.getTime() - now.getTime(), 0);
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diff / (1000 * 60)) % 60);
-      const seconds = Math.floor((diff / 1000) % 60);
+      const startOfToday = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+      );
+      const dayDiffMs = WEDDING_DAY_START.getTime() - startOfToday.getTime();
+      const days = Math.ceil(dayDiffMs / (1000 * 60 * 60 * 24));
 
-      const expired = now >= weddingDate; // ✅ 수정: 12:30 이후 true
+      const timeDiffMs = Math.max(
+        WEDDING_DATE_TIME.getTime() - now.getTime(),
+        0
+      );
+      const hours = Math.floor((timeDiffMs / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((timeDiffMs / (1000 * 60)) % 60);
+      const seconds = Math.floor((timeDiffMs / 1000) % 60);
 
-      setTimeLeft({ days, hours, minutes, seconds, expired });
+      const expired = now >= WEDDING_DATE_TIME;
+
+      setTimeLeft({
+        days: days > 0 ? days : 0,
+        hours,
+        minutes,
+        seconds,
+        expired,
+      });
     }, 1000);
 
     return () => clearInterval(interval);
@@ -164,16 +182,9 @@ const CalendarSection = ({ variant = null }: Props) => {
 
   const now = new Date();
 
-  const weddingDayStart = new Date("2025-08-23T00:00:00+09:00");
-  const weddingDayEnd = new Date("2025-08-24T00:00:00+09:00");
-  const isDday = now >= weddingDayStart && now < weddingDayEnd;
+  const isDday = now >= WEDDING_DAY_START && now < WEDDING_DAY_END;
 
-  const displayDay = isDday
-    ? "D-DAY❤️"
-    : timeLeft.days +
-      (timeLeft.hours > 0 || timeLeft.minutes > 0 || timeLeft.seconds > 0
-        ? 1
-        : 0);
+  const displayDay = isDday ? "D-DAY❤️" : timeLeft.days;
 
   return (
     <motion.div
