@@ -24,7 +24,7 @@ type Props = {
 };
 
 const Copyright = styled.div`
-  margin-bottom: 20px;
+  padding-bottom: 30px;
 `;
 
 const Invitation = ({ variant, openingEnd, nickname }: Props) => {
@@ -46,29 +46,6 @@ const Invitation = ({ variant, openingEnd, nickname }: Props) => {
     localStorage.setItem("rsvp_hidden_date", today);
     setShowPopup(false);
   };
-
-  useEffect(() => {
-    const url = new URL(window.location.href);
-
-    // 공유가 아닌 직접 접근이라면 강제 리디렉션
-    if (url.pathname === "/yuna" && url.searchParams.get("via") !== "kakao") {
-      window.location.replace("/");
-      return;
-    }
-
-    // 공유로 들어온 경우엔 주소만 조용히 변경 (replaceState)
-    if (url.pathname === "/yuna" && url.searchParams.get("via") === "kakao") {
-      const name = url.searchParams.get("name");
-      const via = url.searchParams.get("via");
-
-      const currentState = { name, via, originalPath: url.pathname };
-
-      const newUrl = `${window.location.origin}/`;
-
-      // state 객체와 함께 히스토리를 교체합니다.
-      window.history.replaceState(currentState, "", newUrl);
-    }
-  }, []);
 
   useEffect(() => {
     if (variant === "yuna") {

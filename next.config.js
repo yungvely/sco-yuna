@@ -3,10 +3,6 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: "/yuna",
-        destination: "/", // index.tsx 로 우회
-      },
-      {
         source: "/sco",
         destination: "/",
       },

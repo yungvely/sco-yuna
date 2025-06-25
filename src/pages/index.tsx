@@ -5,39 +5,38 @@ import { FontSizeControl } from "@/components/common/FontSizeController";
 import Invitation from "@/components/Invitation";
 import BackgroundMusic from "@/components/Invitation/BackgroundMusic";
 import Opening from "@/components/Opening";
-import { GetServerSideProps } from "next";
 import Head from "next/head";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-type Props = {
-  nickname: string | null;
-  variant: "yuna" | "sco" | null;
-};
+export default function HomePage() {
+  const [opening, setOpening] = useState(false);
+  const [variant, setVariant] = useState<"yuna" | "sco" | null>(null);
+  const [nickname, setNickname] = useState<string | null>(null);
+  const [isInitialized, setIsInitialized] = useState(false);
 
-export const getServerSideProps: GetServerSideProps<Props> = async (
-  context
-) => {
-  const { req, query } = context;
+  const searchParams = useSearchParams();
 
-  const pathname = req.url?.split("?")[0] || "/"; // 정확한 경로만 추출
-  let nickname: string | null = null;
-  let variant: "yuna" | "sco" | null = null;
+  useEffect(() => {
+    const nameParam = searchParams.get("name");
+    const authParam = searchParams.get("auth");
 
-  if (pathname.startsWith("/yuna")) {
-    variant = "yuna";
-  } else if (pathname.startsWith("/sco")) {
-    variant = "sco";
-  }
+    if (nameParam && authParam === "true") {
+      setVariant("yuna");
+      setNickname(nameParam);
 
-  if (typeof query.name === "string" && query.name.trim()) {
-    nickname = query.name;
-  }
+      window.history.replaceState(null, "", "/");
+    } else if (window.location.pathname.startsWith("/sco")) {
+      setVariant("sco");
+    } else {
+      setVariant(null);
+      setNickname(null);
+    }
 
-  return { props: { nickname, variant } };
-};
+    setIsInitialized(true);
+    setOpening(true);
+  }, []);
 
-export default function HomePage({ nickname, variant }: Props) {
-  const [opening, setOpening] = useState(true);
   useEffect(() => {
     const preventZoom = (e: TouchEvent) => {
       if (e.touches.length > 1) {
@@ -52,6 +51,7 @@ export default function HomePage({ nickname, variant }: Props) {
     };
   }, []);
 
+  if (!isInitialized) return;
   return (
     <>
       <Head>
