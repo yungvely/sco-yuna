@@ -17,6 +17,7 @@
     "@aws-sdk/client-s3": "^3.817.0",
     "@hookform/resolvers": "^5.0.1",
     "@types/mime-types": "^2.1.4",
+    "@vercel/speed-insights": "^1.2.0",
     "animejs": "3",
     "csv-parse": "^5.6.0",
     "dotenv": "^16.5.0",

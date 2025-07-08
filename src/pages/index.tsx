@@ -5,6 +5,7 @@ import { FontSizeControl } from "@/components/common/FontSizeController";
 import Invitation from "@/components/Invitation";
 import BackgroundMusic from "@/components/Invitation/BackgroundMusic";
 import Opening from "@/components/Opening";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import Head from "next/head";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -88,6 +89,7 @@ export default function HomePage() {
       <Opening nickname={nickname} onEnd={() => setOpening(false)} />
       {!opening && <BackgroundMusic />}
       <FontSizeControl visible={!opening && variant !== "yuna"} />
+      <SpeedInsights />
     </>
   );
 }
