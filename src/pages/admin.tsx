@@ -111,8 +111,6 @@ const AdminPage = () => {
   const [chartType, setChartType] = useState<"pie" | "bar">("pie");
   const [showHistory, setShowHistory] = useState(false);
 
-  const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
-
   useEffect(() => {
     if (!authorized) return;
 
@@ -164,6 +162,28 @@ const AdminPage = () => {
     .filter((r) => r.side === side)
     .sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
 
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("/api/admin-auth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ password }),
+      });
+
+      if (response.ok) {
+        setAuthorized(true);
+      } else {
+        alert("비밀번호가 틀렸습니다.");
+        setPassword("");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("로그인 중 오류가 발생했습니다.");
+    }
+  };
+
   if (!authorized) {
     return (
       <PasswordWrapper>
@@ -172,6 +192,9 @@ const AdminPage = () => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") handleLogin();
+          }}
           style={{
             padding: "10px",
             fontSize: "1rem",
@@ -181,7 +204,7 @@ const AdminPage = () => {
           }}
         />
         <button
-          onClick={() => setAuthorized(password === ADMIN_PASSWORD)}
+          onClick={handleLogin}
           style={{
             padding: "10px 16px",
             background: "#000",

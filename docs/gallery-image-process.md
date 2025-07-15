@@ -13,6 +13,6 @@
 `yarn upload:img` 실행 시:
 
 - 변경된 webp/gif/svg 파일만 S3 업로드
-- 삭제된 이미지 → S3에서도 삭제
+- 원본 jpg/png 파일이 삭제 → S3 webp에서도 삭제
 - 변경된 파일 경로 → CloudFront invalidate 요청
 - 업로드 기록은 `.s3-uploaded.json`으로 관리
